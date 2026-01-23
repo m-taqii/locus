@@ -18,15 +18,15 @@ const layout = ({ children }) => {
                 </div>
             </nav>
             <div className='flex'>
-                <section className={`h-[90vh] bg-[#242529] transition-all duration-300 ${open ? 'w-[20vw]' : 'w-[5vw] flex items-center flex-col'}`}>
-                    <button onClick={() => setOpen(!open)} className={`cursor-pointer transition-all duration-300 ${open ? 'relative left-50 border-none w-0 m-5' : 'border-b-2 border-gray-700 pb-2 m-5 w-10 flex justify-center items-center'}`}>
+                <section className={`h-[90vh] backdrop-blur-3xl bg-[#242529] border-r border-gray-700 transition-all duration-300 ${open ? 'w-[20vw]' : 'w-[5vw] flex items-center flex-col'}`}>
+                    <button onClick={() => setOpen(!open)} className={`cursor-pointer transition-all duration-300 ${open ? 'relative left-50 border-none w-0 m-5' : 'border-b border-gray-700 pb-2 m-5 w-10 flex justify-center items-center'}`}>
                         {open ? <PanelRightOpen /> : <PanelRightClose />}
                     </button>
                     <ul className='flex flex-col gap-2 ml-3 mr-3 mt-10 text-white'>
-                        <li className='hover:bg-[#1a1a1e] p-2 hover:rounded-md cursor-pointer hover:border-r-2 hover:border-[#F0A728] border-b-2 border-gray-700'><Link href="/dashboard" className='flex items-center gap-2 '><LayoutDashboard /> {open ? "Dashboard" : ""}</Link></li>
-                        <li className='hover:bg-[#1a1a1e] p-2 hover:rounded-md cursor-pointer hover:border-r-2 hover:border-[#F0A728] border-b-2 border-gray-700'><Link href="/dashboard/inventory" className='flex items-center gap-2'><Package /> {open ? "Inventory" : ""}</Link></li>
-                        <li className='hover:bg-[#1a1a1e] p-2 hover:rounded-md cursor-pointer hover:border-r-2 hover:border-[#F0A728] border-b-2 border-gray-700'><Link href="/dashboard/users" className='flex items-center gap-2'><Users /> {open ? "Users" : ""}</Link></li>
-                        <li className='hover:bg-[#1a1a1e] p-2 hover:rounded-md cursor-pointer hover:border-r-2 hover:border-[#F0A728] border-b-2 border-gray-700'><Link href="/dashboard/settings" className='flex items-center gap-2'><Settings /> {open ? "Settings" : ""}</Link></li>
+                        <Link href="/dashboard" className=''><li className='flex items-center gap-2  hover:bg-[#1a1a1e] p-2 hover:rounded-md cursor-pointer hover:border-r-2 hover:border-[#F0A728] border-b border-gray-700'><LayoutDashboard /> {open ? "Dashboard" : ""}</li></Link>
+                        <Link href="/dashboard/inventory" className=''><li className='flex items-center gap-2 hover:bg-[#1a1a1e] p-2 hover:rounded-md cursor-pointer hover:border-r-2 hover:border-[#F0A728] border-b border-gray-700'><Package /> {open ? "Inventory" : ""}</li></Link>
+                        <Link href="/dashboard/users" className=''><li className='flex items-center gap-2 hover:bg-[#1a1a1e] p-2 hover:rounded-md cursor-pointer hover:border-r-2 hover:border-[#F0A728] border-b border-gray-700'><Users /> {open ? "Users" : ""}</li></Link>
+                        <Link href="/dashboard/settings" className=''><li className='flex items-center gap-2 hover:bg-[#1a1a1e] p-2 hover:rounded-md cursor-pointer hover:border-r-2 hover:border-[#F0A728] border-b border-gray-700'><Settings /> {open ? "Settings" : ""}</li></Link>
                     </ul>
                 </section>
                 <main className={`flex-1 transition-all duration-300 ${open ? 'w-[80vw]' : 'w-full'}`}>
