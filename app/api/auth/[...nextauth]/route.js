@@ -3,6 +3,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcrypt";
 import connectDB from "@/app/lib/db";
 import userModel from "@/models/user.model";
+import Business from "@/models/business.model";
 
 export const authOptions = {
   providers: [
@@ -16,19 +17,60 @@ export const authOptions = {
         await connectDB();
 
         const user = await userModel.findOne({ email: credentials.email });
-        if (!user) throw new Error("User not found");
+
+        if (!user) {
+
+          const admin = await Business.findOne({ email: credentials.email });
+          if (!admin) throw new Error("User not found");
+
+          const isValid = await bcrypt.compare(credentials.password, admin.password);
+          if (!isValid) throw new Error("Invalid password");
+
+          return {
+            id: admin._id.toString(),
+            ownerName: admin.ownerName,
+            businessName: admin.businessName,
+            email: admin.email,
+            role: admin.role
+          };
+
+        }
 
         const isValid = await bcrypt.compare(credentials.password, user.password);
         if (!isValid) throw new Error("Invalid password");
 
         return {
           id: user._id.toString(),
-          name: user.username,
+          name: user.name,
           email: user.email,
+          role: user.role
         };
       },
     }),
   ],
+
+  callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id;                    // MongoDB _id
+        token.role = user.role;
+        token.name = user.name;                // User's name
+        token.ownerName = user.ownerName;      // Business owner's name
+        token.businessName = user.businessName; // Business name
+      }
+      return token;
+    },
+
+    async session({ session, token }) {
+      session.user.id = token.id;
+      session.user.role = token.role;
+      session.user.name = token.name;
+      session.user.ownerName = token.ownerName;
+      session.user.businessName = token.businessName;
+      return session;
+    },
+  },
+
   session: {
     strategy: "jwt",
   },

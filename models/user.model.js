@@ -5,8 +5,9 @@ const UserSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    businessName: {
-        type: String,
+    business: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Business",
         required: true
     },
     email: {

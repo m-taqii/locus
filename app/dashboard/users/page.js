@@ -1,23 +1,41 @@
 "use client"
 import { Pencil, Trash2 } from 'lucide-react'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import AddUser from '@/app/components/AddUser'
+import axios from 'axios'
+
 const page = () => {
+  const [addUserOpen, setAddUserOpen] = useState(false)
+  const [users, setUsers] = useState([])
+  const [loading, setLoading] = useState(true)
 
-const [addUserOpen, setAddUserOpen] = useState(false)
+  // Fetch users on component mount
+  useEffect(() => {
+    fetchUsers()
+  }, [])
 
-  const user = [ {
-    "name": "John Doe",
-    "email": "john.doe@example.com",
-    "role": "Admin",
-    "status": "Active"
-  },
-{
-    "name": "Julie Doe",
-    "email": "Julie.doe@example.com",
-    "role": "Staff",
-    "status": "Active"
-}]
+  const fetchUsers = () => {
+    setLoading(true)
+    axios.get("/api/auth/users", { withCredentials: true })
+      .then((res) => {
+        console.log(res.data);
+        setUsers(res.data.users || [])
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+      .finally(() => {
+        setLoading(false)
+      })
+  }
+
+  // Refetch users when modal closes (after adding a new user)
+  const handleCloseAddUser = (shouldRefetch = false) => {
+    setAddUserOpen(false)
+    if (shouldRefetch) {
+      fetchUsers()
+    }
+  }
 
   return (
     <section className='h-[90vh] bg-[#1a1a1e] w-full p-5'>
@@ -42,18 +60,32 @@ const [addUserOpen, setAddUserOpen] = useState(false)
           </tr>
         </thead>
         <tbody>
-
-          {user.map((user) => (<tr key={user.email} className='p-2 text-center border-b border-gray-700'>
-            <td className='p-2 text-center border-b border-gray-700'>{user.name}</td>
-            <td className='p-2 text-center border-b border-gray-700'>{user.email}</td>
-            <td className='p-2 text-center border-b border-gray-700'>{user.role}</td>
-            <td className='p-2 text-center border-b border-gray-700'>{user.status}</td>
-            <td className='flex gap-3 items-center justify-center m-2'><button className='cursor-pointer hover:text-green-500'><Pencil className='w-5 h-5'/></button><button className='cursor-pointer hover:text-red-500'><Trash2 className='w-5 h-5'/></button></td>
-          </tr>))}
+          {loading ? (
+            <tr>
+              <td colSpan="5" className='p-4 text-center text-gray-500'>Loading...</td>
+            </tr>
+          ) : users.length === 0 ? (
+            <tr>
+              <td colSpan="5" className='p-4 text-center text-gray-500'>No users found</td>
+            </tr>
+          ) : (
+            users.map((user) => (
+              <tr key={user._id || user.email} className='p-2 text-center border-b border-gray-700'>
+                <td className='p-2 text-center border-b border-gray-700'>{user.name}</td>
+                <td className='p-2 text-center border-b border-gray-700'>{user.email}</td>
+                <td className='p-2 text-center border-b border-gray-700'>{user.role}</td>
+                <td className='p-2 text-center border-b border-gray-700'>{user.status}</td>
+                <td className='flex gap-3 items-center justify-center m-2'>
+                  <button className='cursor-pointer hover:text-green-500'><Pencil className='w-5 h-5' /></button>
+                  <button className='cursor-pointer hover:text-red-500'><Trash2 className='w-5 h-5' /></button>
+                </td>
+              </tr>
+            ))
+          )}
         </tbody>
       </table>
 
-      {addUserOpen && <AddUser setAddUserOpen={setAddUserOpen} />}
+      {addUserOpen && <AddUser setAddUserOpen={handleCloseAddUser} />}
     </section>
   )
 }

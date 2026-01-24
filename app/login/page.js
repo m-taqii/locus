@@ -1,5 +1,4 @@
 "use client"
-import axios from 'axios';
 import Link from 'next/link';
 import React, { useState } from 'react'
 import { signIn } from 'next-auth/react';
@@ -42,7 +41,7 @@ const page = () => {
                 <div className='circular-gradient'></div>
 
                 <h1 className='text-4xl font-extrabold text-transparent bg-clip-text 
-           bg-linear-to-tl from-[#F0A728] to-[#9C2906] mb-10'>Login</h1>
+           bg-linear-to-tl from-[#F0A728] to-[#9C2906] mb-10'>Login to your account</h1>
 
                 <form action="" className='flex flex-col gap-4 backdrop-blur-2xl p-5 rounded-xl border border-white/15 bg-white/5 md:w-110 w-85' onSubmit={handleSubmit}>
 
@@ -52,7 +51,7 @@ const page = () => {
 
                     <button type="submit" className='bg-linear-to-r from-[#a34b27] to-[#F0A728] text-white px-5 py-2 rounded-xl flex items-center justify-center font-semibold hover:cursor-pointer hover:shadow-[0_8px_25px_rgba(255,153,51,0.45)] hover:brightness-110 transition-all duration-300 ease-in-out'>{loading ? "Loading..." : "Login"}</button>
 
-                    <p className='text-center text-sm'>Don't have an account? <Link href="/register" className='text-[#a34b27] hover:text-[#a34a278f] font-semibold'>Register</Link></p>
+                    <p className='text-center text-sm'>Want to register your business? <Link href="/register" className='text-[#a34b27] hover:text-[#a34a278f] font-semibold'>Register</Link></p>
 
                     {error && <p className='text-red-500 text-center'>{error}</p>}
                 </form>

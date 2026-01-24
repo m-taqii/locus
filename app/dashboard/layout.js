@@ -3,9 +3,12 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useState } from 'react'
 import { LayoutDashboard, Package, Users, Settings, PanelRightOpen, PanelRightClose } from 'lucide-react'
+import { useSession } from 'next-auth/react'
 
 const layout = ({ children }) => {
     const [open, setOpen] = useState(false)
+    const { data: session } = useSession()
+    
     return (
         <div>
             <nav className='flex items-center justify-between w-full h-[10vh] border-b-2 border-gray-700 bg-[#242529]'>
@@ -14,7 +17,7 @@ const layout = ({ children }) => {
                 </div>
                 <div className='flex items-center gap-2'>
                     <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="User" width={40} height={40} className='rounded-full' />
-                    <p className='mr-3'>John Doe</p>
+                    <p className='mr-3'>{session?.user?.name || session?.user?.ownerName || null}</p>
                 </div>
             </nav>
             <div className='flex'>
