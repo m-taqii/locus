@@ -16,7 +16,7 @@ export async function POST(req) {
       return NextResponse.json({ error: "Unauthorized - Please login first" }, { status: 401 });
     }
 
-    const adminId = session.user.id; // ✅ MongoDB ObjectId (string)
+    const adminId = session.user.id; 
 
     if (!adminId) {
       return NextResponse.json({ error: "Session user ID not found" }, { status: 401 });
@@ -75,3 +75,4 @@ export async function GET(req) {
     return NextResponse.json({ error: error.message || "Internal server error" }, { status: 500 });
   }
 }
+

@@ -11,7 +11,7 @@ const AddUser = ({ setAddUserOpen }) => {
         status: "active"
     })
     const [loading, setLoading] = useState(false);
-    
+
     const handleSubmit = async (e) => {
         e.preventDefault()
         setLoading(true);
@@ -23,11 +23,11 @@ const AddUser = ({ setAddUserOpen }) => {
         } catch (err) {
             console.log(err);
             setLoading(false);
-            setAddUserOpen(false) // Close without refetch on error
+            setAddUserOpen(false) 
         }
     }
     const handleCancel = () => {
-        setAddUserOpen(false) // Close without refetch
+        setAddUserOpen(false) 
     }
     return (
         <div onClick={handleCancel} className='w-full h-full bg-black/50 absolute top-0 left-0 flex justify-center items-center'>
@@ -43,8 +43,8 @@ const AddUser = ({ setAddUserOpen }) => {
                         <div className="flex flex-col">
                             <label htmlFor="role" className="text-xs text-gray-500">Role</label>
                             <select name="role" onChange={(e) => setUser({ ...user, role: e.target.value })} className='p-2 rounded-lg bg-[#2a2a2e] text-white focus:border-[#a34b27] focus:border focus:outline-none focus:shadow focus:shadow-[#a34b27] transition-all duration-300 ease-in-out' required>
-                                <option value="admin" className="bg-[#1a1a1e] text-white">Admin</option>
-                                <option value="staff" className="bg-[#1a1a1e] text-white">Staff</option>
+                                <option value="Admin" className="bg-[#1a1a1e] text-white">Admin</option>
+                                <option value="Staff" className="bg-[#1a1a1e] text-white">Staff</option>
                             </select>
                         </div>
 
@@ -57,7 +57,7 @@ const AddUser = ({ setAddUserOpen }) => {
                         </div>
                     </div>
 
-                    <button type='submit' className='bg-linear-to-r from-[#a34b27] to-[#F0A728] text-white px-5 py-2 rounded-xl flex items-center justify-center font-semibold hover:cursor-pointer hover:shadow-[0_8px_25px_rgba(255,153,51,0.45)] hover:brightness-110 transition-all duration-300 ease-in-out'>Save</button>
+                    <button type='submit' className='bg-linear-to-r from-[#a34b27] to-[#F0A728] text-white px-5 py-2 rounded-xl flex items-center justify-center font-semibold hover:cursor-pointer hover:shadow-[0_8px_25px_rgba(255,153,51,0.45)] hover:brightness-110 transition-all duration-300 ease-in-out'>{loading ? "Loading..." : "Save"}</button>
                 </form>
             </div>
 

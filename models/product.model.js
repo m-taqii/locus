@@ -1,9 +1,9 @@
 import mongoose from "mongoose";
 
 const productSchema = new mongoose.Schema({
-    user: {
+    owner: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
+        ref: "Business",
         required: true
     },
     name: {
@@ -32,7 +32,6 @@ const productSchema = new mongoose.Schema({
     },
     image: {
         type: String,
-        required: true
     },
     status: {
         type: String,
@@ -41,6 +40,5 @@ const productSchema = new mongoose.Schema({
     }
 }, { timestamps: true })
 
-const Product = mongoose.model("Product", productSchema)
 
-export default Product
+export default mongoose.models.Product || mongoose.model("Product", productSchema)

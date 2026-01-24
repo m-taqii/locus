@@ -29,6 +29,10 @@ const page = () => {
       })
   }
 
+  const handleDeleteUser = (userId) => {
+   
+  }
+
   // Refetch users when modal closes (after adding a new user)
   const handleCloseAddUser = (shouldRefetch = false) => {
     setAddUserOpen(false)
@@ -77,7 +81,7 @@ const page = () => {
                 <td className='p-2 text-center border-b border-gray-700'>{user.status}</td>
                 <td className='flex gap-3 items-center justify-center m-2'>
                   <button className='cursor-pointer hover:text-green-500'><Pencil className='w-5 h-5' /></button>
-                  <button className='cursor-pointer hover:text-red-500'><Trash2 className='w-5 h-5' /></button>
+                  <button onClick={() => handleDeleteUser(user._id)} className='cursor-pointer hover:text-red-500'><Trash2 className='w-5 h-5' /></button>
                 </td>
               </tr>
             ))
