@@ -32,6 +32,7 @@ export const authOptions = {
             businessName: admin.businessName,
             email: admin.email,
             role: admin.role,
+            businessId: admin._id.toString(), 
           };
 
         }
@@ -45,7 +46,7 @@ export const authOptions = {
           email: user.email,
           role: user.role,
           businessName: user.businessName,
-          businessId: user.businessId
+          businessId: user.business
         };
       },
     }),
@@ -56,7 +57,7 @@ export const authOptions = {
       if (user) {
         token.id = user.id;                    // MongoDB _id
         token.role = user.role;
-        token.businessId = user.businessId;
+        token.businessId = user.businessId;    
         token.businessName = user.businessName;
         token.name = user.name;                // User's name
         token.ownerName = user.ownerName;      // Business owner's name
@@ -67,7 +68,7 @@ export const authOptions = {
     async session({ session, token }) {
       session.user.id = token.id;
       session.user.role = token.role;
-      session.user.businessId = token.businessId;
+      session.user.businessId = token.businessId; 
       session.user.businessName = token.businessName;
       session.user.name = token.name;
       session.user.ownerName = token.ownerName;

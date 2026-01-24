@@ -13,7 +13,12 @@ export async function GET() {
         }
         const user = session.user;
 
-        const products = await Product.find({ owner: user.id || user.businessId });
+        const products = await Product.find({
+            $or: [
+                { owner: user.id },
+                { owner: user.businessId }
+            ]
+        });
         return NextResponse.json({ products, message: "Products fetched successfully" });
     } catch (error) {
         console.error("Get products error:", error);
@@ -31,7 +36,6 @@ export async function POST(request) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
         const user = session.user;
-        console.log("User:", user);
 
         if (user.role !== "Admin" && user.role !== "admin") {
             return NextResponse.json({ error: "Unauthorized - Admin access required" }, { status: 401 });
