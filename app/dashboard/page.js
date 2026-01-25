@@ -33,7 +33,14 @@ const page = () => {
   }, [])
 
   const handleDeleteProduct = (productId) => {
-   
+    axios.delete(`/api/products/${productId}`, { withCredentials: true })
+      .then((res) => {
+        console.log(res.data);
+        fetchProducts() // Refresh the products list
+      })
+      .catch((err) => {
+        console.error("Delete error:", err);
+      })
   }
 
   return (
@@ -44,10 +51,10 @@ const page = () => {
           <h1 className='md:text-2xl text-xl font-bold text-white text-left'>Dashboard</h1>
           <p className='text-gray-500 text-center md:text-base text-sm'>Welcome back, {session?.user?.name || session?.user?.ownerName || null}</p>
         </div>
-        <div className='flex items-center gap-2'>
+        {session?.user?.role === "admin" && <div className='flex items-center gap-2'>
           <button onClick={() => setAddProductOpen(true)} className='bg-linear-to-r from-[#a34b27] to-[#F0A728] text-white text-[0.75rem] md:text-[1rem] md:px-5 md:py-2 px-2 py-1 md:rounded-xl rounded-lg flex items-center justify-center font-semibold hover:cursor-pointer hover:shadow-[0_8px_25px_rgba(255,153,51,0.45)] hover:brightness-110 transition-all duration-300 ease-in-out'>Add Product</button>
           <button className='bg-linear-to-r from-[#a34b27] to-[#F0A728] text-white text-[0.75rem] md:text-[1rem] md:px-5 md:py-2 px-2 py-1 md:rounded-xl rounded-lg flex items-center justify-center font-semibold hover:cursor-pointer hover:shadow-[0_8px_25px_rgba(255,153,51,0.45)] hover:brightness-110 transition-all duration-300 ease-in-out'>Add Category</button>
-        </div>
+        </div>}
       </div>
 
       {addProductOpen && <AddProducts setAddProductOpen={setAddProductOpen} />}

@@ -16,7 +16,8 @@ const businessSchema = new mongoose.Schema({
     },
     password: {
         type: String,
-        required: true
+        required: true,
+        select: false
     },
     role: {
         type: String,
@@ -31,5 +32,4 @@ const businessSchema = new mongoose.Schema({
     timestamps: true
 })
 
-// Check if model exists before creating (prevents hot reload errors in Next.js)
 export default mongoose.models.Business || mongoose.model("Business", businessSchema)

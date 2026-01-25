@@ -2,12 +2,12 @@
 import { useState } from "react"
 import axios from "axios"
 
-const AddUser = ({ setAddUserOpen }) => {
+const AddUser = ({ setAddUserOpen, setToast }) => {
     const [user, setUser] = useState({
         name: "",
         email: "",
         password: "",
-        role: "admin",
+        role: "Admin",
         status: "active"
     })
     const [loading, setLoading] = useState(false);
@@ -19,15 +19,23 @@ const AddUser = ({ setAddUserOpen }) => {
             const res = await axios.post("/api/auth/users", user, { withCredentials: true })
             console.log(res.data);
             setLoading(false);
+            setToast && setToast({
+                message: res.data?.message || 'User created successfully',
+                type: 'success'
+            })
             setAddUserOpen(true) // Pass true to trigger refetch
         } catch (err) {
             console.log(err);
             setLoading(false);
-            setAddUserOpen(false) 
+            setToast && setToast({
+                message: err.response?.data?.message || 'Failed to create user',
+                type: 'error'
+            })
+            setAddUserOpen(false)
         }
     }
     const handleCancel = () => {
-        setAddUserOpen(false) 
+        setAddUserOpen(false)
     }
     return (
         <div onClick={handleCancel} className='w-full h-full bg-black/50 absolute top-0 left-0 flex justify-center items-center'>

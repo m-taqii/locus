@@ -2,15 +2,27 @@
 import { Pencil, Trash2 } from 'lucide-react'
 import React, { useState, useEffect } from 'react'
 import AddUser from '@/app/components/AddUser'
+import Toast from '@/app/components/Toast'
 import axios from 'axios'
+import { useSession } from 'next-auth/react'
+import { useRouter } from 'next/navigation'
+import EditUser from '@/app/components/EditUser'
 
 const page = () => {
+  const { data: session } = useSession()
   const [addUserOpen, setAddUserOpen] = useState(false)
   const [users, setUsers] = useState([])
   const [loading, setLoading] = useState(true)
+  const [deleteId, setDeleteId] = useState(null)
+  const [toast, setToast] = useState(null)
+  const [editUserOpen, setEditUserOpen] = useState(false)
+  const [editUser, setEditUser] = useState(null)
+  const router = useRouter()
 
-  // Fetch users on component mount
   useEffect(() => {
+    if (session?.user?.role !== "Admin") {
+      router.push("/dashboard")
+    }
     fetchUsers()
   }, [])
 
@@ -23,6 +35,10 @@ const page = () => {
       })
       .catch((err) => {
         console.log(err);
+        setToast({
+          message: err.response?.data?.message || 'Failed to fetch users',
+          type: 'error'
+        })
       })
       .finally(() => {
         setLoading(false)
@@ -30,15 +46,39 @@ const page = () => {
   }
 
   const handleDeleteUser = (userId) => {
-   
+
+    axios.delete(`/api/auth/users/${userId}`, { withCredentials: true })
+      .then((res) => {
+        console.log(res.data);
+        setToast({
+          message: res.data?.message || 'User deleted successfully',
+          type: 'success'
+        })
+        fetchUsers()
+      })
+      .catch((err) => {
+        console.log(err);
+        setToast({
+          message: err.response?.data?.message || 'Failed to delete user',
+          type: 'error'
+        })
+      })
+      .finally(() => {
+        setDeleteId(null)
+      })
+
   }
 
-  // Refetch users when modal closes (after adding a new user)
   const handleCloseAddUser = (shouldRefetch = false) => {
     setAddUserOpen(false)
     if (shouldRefetch) {
       fetchUsers()
     }
+  }
+
+  const handleEditUser = (user) => {
+    setEditUser(user)
+    setEditUserOpen(true)
   }
 
   return (
@@ -80,8 +120,8 @@ const page = () => {
                 <td className='p-2 text-center border-b border-gray-700'>{user.role}</td>
                 <td className='p-2 text-center border-b border-gray-700'>{user.status}</td>
                 <td className='flex gap-3 items-center justify-center m-2'>
-                  <button className='cursor-pointer hover:text-green-500'><Pencil className='w-5 h-5' /></button>
-                  <button onClick={() => handleDeleteUser(user._id)} className='cursor-pointer hover:text-red-500'><Trash2 className='w-5 h-5' /></button>
+                  <button onClick={() => handleEditUser(user)} className='cursor-pointer hover:text-green-500'><Pencil className='w-5 h-5' /></button>
+                  <button onClick={() => setDeleteId(user._id)} className='cursor-pointer hover:text-red-500'><Trash2 className='w-5 h-5' /></button>
                 </td>
               </tr>
             ))
@@ -89,7 +129,39 @@ const page = () => {
         </tbody>
       </table>
 
-      {addUserOpen && <AddUser setAddUserOpen={handleCloseAddUser} />}
+      {addUserOpen && <AddUser setAddUserOpen={handleCloseAddUser} setToast={setToast} />}
+
+      {editUserOpen && <EditUser setEditUserOpen={setEditUserOpen} user={editUser} fetchUsers={fetchUsers} setToast={setToast} />}
+
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast(null)}
+        />
+      )}
+
+      {deleteId && (
+        <div className="bg-[#252529] p-6 rounded-2xl border border-gray-800 shadow-2xl w-80 animate-in fade-in slide-in-from-bottom-4">
+          <h3 className="text-white font-bold text-lg mb-2">Delete User?</h3>
+          <p className="text-gray-400 text-sm mb-6">This action is permanent and cannot be undone. Are you sure you want to proceed?</p>
+          <div className="flex justify-end gap-3">
+            <button
+              onClick={() => setDeleteId(null)}
+              className="text-gray-400 hover:text-gray-200 cursor-pointer"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={() => handleDeleteUser(deleteId)}
+              className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors cursor-pointer"
+            >
+              Delete
+            </button>
+          </div>
+        </div>
+      )}
+
     </section>
   )
 }

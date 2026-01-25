@@ -329,7 +329,7 @@ export default function Home() {
         </section>
 
         <footer className="py-12 border-t border-white/5 text-center text-white/20 text-sm">
-          <p>&copy; {new Date().getFullYear()} Locus Inc. Crafted with precision.</p>
+          <p>&copy; {new Date().getFullYear()} Locus. Crafted with precision.</p>
         </footer>
       </div>
     </main>

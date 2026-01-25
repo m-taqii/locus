@@ -68,7 +68,12 @@ export async function GET(req) {
 
     const businessId = session.user.id; // The logged-in admin's ID is the business ID
 
-    const users = await User.find({ business: businessId });
+    const users = await User.find({$or:[{ 
+      business: businessId 
+    },{
+      business: session.user.businessId
+    }]});
+    
     return NextResponse.json({ users });
   } catch (error) {
     console.error("Get users error:", error);
