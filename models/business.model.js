@@ -21,7 +21,7 @@ const businessSchema = new mongoose.Schema({
     },
     role: {
         type: String,
-        default: "Admin"
+        default: "Owner"
     },
     status: {
         type: String,

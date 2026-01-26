@@ -12,7 +12,7 @@ export async function DELETE(request, context) {
     if (!session) {
         return NextResponse.json({ message: "Unauthorized" }, { status: 401 })
     }
-    if (session.user.role !== "Admin" && session.user.role !== "admin") {
+    if (session.user.role !== "Admin" && session.user.role !== "Owner") {
         return NextResponse.json({ message: "Unauthorized - Admin access required" }, { status: 401 })
     }
 
@@ -45,7 +45,7 @@ export async function PATCH(request, context) {
     if (!session) {
         return NextResponse.json({ message: "Unauthorized" }, { status: 401 })
     }
-    if (session.user.role !== "Admin" && session.user.role !== "admin") {
+    if (session.user.role !== "Admin" && session.user.role !== "Owner") {
         return NextResponse.json({ message: "Unauthorized - Admin access required" }, { status: 401 })
     }
 

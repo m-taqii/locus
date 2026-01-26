@@ -16,7 +16,16 @@ export async function POST(req) {
       return NextResponse.json({ error: "Unauthorized - Please login first" }, { status: 401 });
     }
 
-    const adminId = session.user.id; 
+    let adminId;
+    if (session.user.role !== "Admin" && session.user.role !== "Owner") {
+      return NextResponse.json({ error: "Unauthorized - Admin access required" }, { status: 401 });
+    }
+
+    if (session.user.role == "Owner") {
+      adminId = session.user.id;
+    } else if (session.user.role == "Admin") {
+      adminId = session.user.businessId;
+    }
 
     if (!adminId) {
       return NextResponse.json({ error: "Session user ID not found" }, { status: 401 });
@@ -68,12 +77,14 @@ export async function GET(req) {
 
     const businessId = session.user.id; // The logged-in admin's ID is the business ID
 
-    const users = await User.find({$or:[{ 
-      business: businessId 
-    },{
-      business: session.user.businessId
-    }]});
-    
+    const users = await User.find({
+      $or: [{
+        business: businessId
+      }, {
+        business: session.user.businessId
+      }]
+    });
+
     return NextResponse.json({ users });
   } catch (error) {
     console.error("Get users error:", error);

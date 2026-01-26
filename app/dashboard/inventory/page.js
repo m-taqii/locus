@@ -77,6 +77,7 @@ const page = () => {
     setEditProductOpen(true)
   }
 
+  const isAdmin = session?.user?.role === "Admin" || session?.user?.role === "Owner"
 
   return (
     <section className='h-[90vh] bg-[#1a1a1e] transition-all duration-300 p-5'>
@@ -86,7 +87,7 @@ const page = () => {
           <h1 className='md:text-2xl text-xl font-bold text-white text-left'>Inventory</h1>
           <p className='text-gray-500 text-center md:text-base text-sm'>Manage your inventory</p>
         </div>
-        {session?.user?.role === "admin" && <div className='flex items-center gap-2'>
+        {isAdmin && <div className='flex items-center gap-2'>
           <button onClick={() => setAddProductOpen(true)} className='bg-linear-to-r from-[#a34b27] to-[#F0A728] text-white text-[0.75rem] md:text-[1rem] md:px-5 md:py-2 px-2 py-1 md:rounded-xl rounded-lg flex items-center justify-center font-semibold hover:cursor-pointer hover:shadow-[0_8px_25px_rgba(255,153,51,0.45)] hover:brightness-110 transition-all duration-300 ease-in-out'>Add Product</button>
           <button className='bg-linear-to-r from-[#a34b27] to-[#F0A728] text-white text-[0.75rem] md:text-[1rem] md:px-5 md:py-2 px-2 py-1 md:rounded-xl rounded-lg flex items-center justify-center font-semibold hover:cursor-pointer hover:shadow-[0_8px_25px_rgba(255,153,51,0.45)] hover:brightness-110 transition-all duration-300 ease-in-out'>Add Category</button>
         </div>}
@@ -120,7 +121,7 @@ const page = () => {
                 <td className='p-2 text-center border-b border-gray-700'>{product.status}</td>
                 <td className='flex gap-3 items-center justify-center m-2'>
                   <button onClick={() => handleEditProduct(product)} className='cursor-pointer hover:text-green-500'><Pencil className='w-5 h-5' /></button>
-                  {session?.user?.role === "admin" && <button onClick={() => setDeleteId(product._id)} className='cursor-pointer hover:text-red-500'><Trash2 className='w-5 h-5' /></button>}
+                  {isAdmin && <button onClick={() => setDeleteId(product._id)} className='cursor-pointer hover:text-red-500'><Trash2 className='w-5 h-5' /></button>}
                 </td>
               </tr>
             ))

@@ -20,7 +20,7 @@ const page = () => {
   const router = useRouter()
 
   useEffect(() => {
-    if (session?.user?.role !== "Admin") {
+    if (session?.user?.role !== "Admin" && session?.user?.role !== "Owner") {
       router.push("/dashboard")
     }
     fetchUsers()

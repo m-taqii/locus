@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { useState } from 'react'
 import axios from 'axios'
 import { useRouter } from 'next/navigation'
+import { signIn } from 'next-auth/react'
 
 const Register = () => {
     const router = useRouter();
@@ -15,20 +16,35 @@ const Register = () => {
     const [error, setError] = useState(null)
     const [loading, setLoading] = useState(false);
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
-        axios.post("/api/auth/registerBusiness", formData)
-        .then((res) => {
+
+        try {
+            // Register the business
+            const res = await axios.post("/api/auth/registerBusiness", formData);
             setError(null);
             console.log(res.data);
+
+            // Automatically log in the user
+            const signInResult = await signIn("credentials", {
+                email: formData.email,
+                password: formData.password,
+                redirect: false
+            });
+
+            if (signInResult?.error) {
+                setError("Registration successful but login failed. Please login manually.");
+                setLoading(false);
+                router.push("/login");
+            } else {
+                // Successfully logged in, redirect to dashboard
+                router.push("/dashboard");
+            }
+        } catch (err) {
+            setError(err.response?.data?.error || "Registration failed");
             setLoading(false);
-            router.push("/dashboard");
-        })
-        .catch((err) => {
-            setError(err.response.data.error);
-            setLoading(false);
-        })
+        }
     }
 
     return (

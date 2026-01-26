@@ -12,8 +12,8 @@ export async function DELETE(request, context) {
     if (!session) {
         return NextResponse.json({ message: "Unauthorized" }, { status: 401 })
     }
-    if (session.user.role !== "Admin" && session.user.role !== "admin") {
-        return NextResponse.json({ message: "Unauthorized - Admin access required" }, { status: 401 })
+    if(session.user.role !=="Admin" && session.user.role !=="Owner"){
+        return NextResponse.json({message: "Unauthorized - Admin access required"}, {status: 401})
     }
 
     try {
@@ -41,12 +41,15 @@ export async function DELETE(request, context) {
 export async function PATCH(request, context){
     const session = await getServerSession(authOptions)
     const { id } = await context.params
+    
     if(!session){
         return NextResponse.json({message: "Unauthorized"}, {status: 401})
     }
-    if(session.user.role !=="Admin" && session.user.role !=="admin"){
+
+    if(session.user.role !=="Admin" && session.user.role !=="Owner"){
         return NextResponse.json({message: "Unauthorized - Admin access required"}, {status: 401})
     }
+
     try {
         await connectDb()
         const body = await request.json()

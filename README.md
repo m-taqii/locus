@@ -8,7 +8,7 @@
 ![TailwindCSS](https://img.shields.io/badge/TailwindCSS-4.0-38B2AC?logo=tailwind-css)
 ![NextAuth](https://img.shields.io/badge/NextAuth-4.24.13-blue)
 ![License](https://img.shields.io/badge/License-MIT-green)
-![Version](https://img.shields.io/badge/Version-0.2.0-orange)
+![Version](https://img.shields.io/badge/Version-0.3.0-orange)
 
 **Master Your Inventory** — Precision. Control. Growth.
 
@@ -20,7 +20,19 @@ The operating system for modern commerce.
 
 ---
 
-## 🆕 What's New in v0.2.0
+## 🆕 What's New in v0.3.0
+
+✅ **Stock Management System** - Complete stock-in/stock-out functionality  
+✅ **Activity Logging** - Full audit trail of all stock adjustments  
+✅ **Stock History** - View recent adjustments with timestamps  
+✅ **Search Functionality** - Search products by name or SKU  
+✅ **Real-time Stock Validation** - Prevents negative stock levels  
+✅ **Settings Page** - Basic settings page structure  
+✅ **Enhanced Navigation** - Added "Manage Stocks" menu item  
+
+**Phase 2 Features In Progress!** Core inventory tracking features are now live.
+
+### Previous Updates (v0.2.0)
 
 ✅ **Full CRUD Implementation** - Complete Create, Read, Update, Delete for Products & Users  
 ✅ **Edit Modals** - Pre-populated forms for updating products and users  
@@ -29,9 +41,7 @@ The operating system for modern commerce.
 ✅ **Role-Based UI Controls** - Admin-only buttons for Add/Delete operations  
 ✅ **Enhanced UX** - Smoother user experience with loading states and auto-refresh  
 ✅ **API Routes Expansion** - Added PATCH and DELETE endpoints for dynamic routes  
-✅ **Password Management** - Optional password updates in user edit (leave blank to keep current)  
-
-**MVP Phase 1 Complete!** All core inventory management features are now fully functional.
+✅ **Password Management** - Optional password updates in user edit (leave blank to keep current)
 
 ---
 
@@ -66,9 +76,12 @@ The application features a **dark-themed UI** with stunning **GSAP animations**,
 
 - 🏢 **Multi-tenant Architecture** - Each business has its own isolated data
 - 🔐 **Secure Authentication** - NextAuth.js with JWT session management
-- 👥 **Role-Based Access Control** - Admin and Staff user roles
+- 👥 **Role-Based Access Control** - Admin and Staff user roles with UI-level permissions
 - 📦 **Complete Inventory Management** - Track products with categories, SKUs, and thresholds
-- 📊 **Real-time Updates** - Dynamic data fetching with Axios
+- 📊 **Stock Management System** - Adjust inventory with stock-in/stock-out operations
+- 📝 **Activity Logging** - Complete audit trail of all inventory movements
+- 🔍 **Search & Filter** - Find products quickly by name or SKU
+- 📱 **Real-time Updates** - Dynamic data fetching and instant UI refresh
 - 🎨 **Modern UI/UX** - Scroll-triggered animations, parallax effects, and glassmorphism
 
 
@@ -130,15 +143,35 @@ The application features a **dark-themed UI** with stunning **GSAP animations**,
 - **Business Isolation** - Users can only see data from their own business
 - **Admin-Only Features** - User management restricted to admins
 
-### 📊 Activity Logging (Schema Ready)
+### 📊 Stock Management & Activity Logging
 
-- **Log Model** for tracking inventory changes
-- **Track Actions:** "In" (stock added) and "Out" (stock removed)
-- **Log Attributes:**
-  - User ID, Product ID
-  - Action type, Quantity
-  - Timestamp
-- *Note: Logging functionality is schema-ready but not yet implemented in the UI*
+- **Stock Adjustment System** - Manually adjust inventory levels
+- **Stock-In Operations:**
+  - Add new inventory (shipments, restocking)
+  - Optional reason/notes for adjustments
+  - Real-time stock updates
+- **Stock-Out Operations:**
+  - Remove inventory (sales, damage, theft)
+  - Validation to prevent negative stock  
+  - Automatic quantity updates
+- **Activity Logging:**
+  - Complete audit trail of all adjustments
+  - Tracks: User, Product, Quantity, Type, Reason
+  - Records previous and new quantities
+  - Timestamps for every transaction
+- **Stock History View:**
+  - Recent 10 adjustments displayed
+  - Color-coded (green for in, red for out)
+  - Filterable by product
+  - Sortable by date (newest first)
+- **Search Functionality:**
+  - Search products by name or SKU
+  - Real-time filter as you type
+  - Shows current stock levels
+- **Stock Validation:**
+  - Prevents stock going below zero
+  - Shows available quantity
+  - Displays minimum threshold warnings
 
 ### 🎨 UI/UX Features
 
@@ -210,6 +243,8 @@ locus/
 │   │       ├── route.js           # GET/POST - Fetch/Create products
 │   │       └── [id]/              # Dynamic product routes
 │   │           └── route.js       # PATCH/DELETE - Update/Delete product
+│   └── stock-adjustments/     # Stock management
+│       └── route.js           # GET/POST - Fetch/Create stock adjustments
 │   │
 │   ├── components/                # Reusable React components
 │   │   ├── AddProducts.jsx        # Product creation modal form
@@ -223,8 +258,12 @@ locus/
 │   ├── dashboard/                 # Protected dashboard area
 │   │   ├── inventory/             # Inventory management page
 │   │   │   └── page.js            # Products table with full CRUD
+│   │   ├── manage-stocks/         # Stock adjustment page
+│   │   │   └── page.js            # Stock-in/stock-out with history
 │   │   ├── users/                 # User management page (Admin only)
 │   │   │   └── page.js            # Users table with full CRUD
+│   │   ├── settings/              # Settings page
+│   │   │   └── page.js            # User/business settings (basic)
 │   │   ├── layout.js              # Dashboard layout with sidebar
 │   │   └── page.js                # Dashboard home/overview
 │   │
@@ -243,8 +282,9 @@ locus/
 │
 ├── models/                        # Mongoose schemas
 │   ├── business.model.js          # Business/Admin schema
-│   ├── logs.model.js              # Activity log schema (not yet used)
+│   ├── logs.model.js              # Old activity log schema (deprecated)
 │   ├── product.model.js           # Product schema
+│   ├── stockLogs.model.js         # Stock adjustment logs schema
 │   └── user.model.js              # User/Staff schema
 │
 ├── public/                        # Static assets
@@ -458,27 +498,32 @@ Stores inventory product information.
 
 ---
 
-### 4. Log Model (Schema Ready - Not Yet Implemented)
-**File:** `models/logs.model.js`
+### 4. StockLogs Model ✅ IMPLEMENTED
+**File:** `models/stockLogs.model.js`
 
-Designed to track inventory movements.
+Tracks all stock adjustments and inventory movements.
 
 ```javascript
 {
-  userId: ObjectId (required, ref: "User"),       // Who made the change
-  productId: ObjectId (required, ref: "Product"), // Which product
-  action: String (enum: ["In", "Out"], required), // Stock in or out
-  quantity: Number (required),                    // Amount changed
-  timestamp: Date (default: Date.now),            // When it happened
-  createdAt: Date,                                // Auto-generated
+  userId: ObjectId (required, ref: "User"),       // Who made the adjustment
+  product: ObjectId (required, ref: "Product"),   // Which product
+  productName: String (required),                 // Product name snapshot
+  quantity: Number (required),                    // Amount adjusted
+  type: String (enum: ["stock-in", "stock-out"], required), // Adjustment type
+  reason: String (default: "Stock adjustment"),   // Optional reason/notes
+  previousQuantity: Number (required),            // Stock before adjustment
+  newQuantity: Number (required),                 // Stock after adjustment
+  createdAt: Date,                                // Auto-generated timestamp
   updatedAt: Date                                 // Auto-generated
 }
 ```
 
-**Future Implementation:**
-- Track stock additions ("In") and removals ("Out")
-- Generate inventory reports
-- Audit trail for compliance
+**Features:**
+- Complete audit trail of all inventory changes
+- Captures before/after quantities for verification
+- Supports custom reasons for adjustments
+- Automatic timestamp tracking
+- Used for "Manage Stocks" page history view
 
 ---
 
@@ -843,6 +888,114 @@ Delete a user permanently.
 
 ---
 
+### Stock Management Routes
+
+#### `POST /api/stock-adjustments`
+**File:** `app/api/stock-adjustments/route.js`
+
+Create a new stock adjustment (add or remove inventory).
+
+**Headers:** Requires authenticated session
+
+**Request Body:**
+```json
+{
+  "productId": "507f1f77bcf86cd799439013",
+  "quantity": 50,
+  "type": "stock-in",
+  "reason": "New shipment from supplier"
+}
+```
+
+**Response (Success):**
+```json
+{
+  "message": "Stock added successfully",
+  "adjustment": {
+    "_id": "507f1f77bcf86cd799439014",
+    "userId": "507f1f77bcf86cd799439011",
+    "product": "507f1f77bcf86cd799439013",
+    "productName": "Laptop",
+    "quantity": 50,
+    "type": "stock-in",
+    "reason": "New shipment from supplier",
+    "previousQuantity": 100,
+    "newQuantity": 150,
+    "createdAt": "2026-01-26T10:00:00.000Z"
+  },
+  "product": {
+    "_id": "507f1f77bcf86cd799439013",
+    "name": "Laptop",
+    "quantity": 150
+  }
+}
+```
+
+**Response (Error - Insufficient Stock):**
+```json
+{
+  "message": "Insufficient stock. Current quantity: 10"
+}
+```
+
+**Validations:**
+- Product ID, quantity, and type are required
+- Quantity must be greater than 0
+- Type must be "stock-in" or "stock-out"
+- For stock-out: validates sufficient quantity available
+- Product must exist
+
+**Features:**
+- Automatically updates product quantity
+- Creates audit log entry
+- Prevents negative stock levels
+
+---
+
+#### `GET /api/stock-adjustments`
+**File:** `app/api/stock-adjustments/route.js`
+
+Fetch all stock adjustments with optional filtering.
+
+**Headers:** Requires authenticated session
+
+**Query Parameters:**
+- `limit` (optional) - Number of records to return (default: 50)
+- `productId` (optional) - Filter by specific product
+
+**Response (Success):**
+```json
+{
+  "adjustments": [
+    {
+      "_id": "507f1f77bcf86cd799439014",
+      "userId": "507f1f77bcf86cd799439011",
+      "product": {
+        "_id": "507f1f77bcf86cd799439013",
+        "name": "Laptop",
+        "sku": "SKU-12345"
+      },
+      "productName": "Laptop",
+      "quantity": 50,
+      "type": "stock-in",
+      "reason": "New shipment from supplier",
+      "previousQuantity": 100,
+      "newQuantity": 150,
+      "createdAt": "2026-01-26T10:00:00.000Z",
+      "updatedAt": "2026-01-26T10:00:00.000Z"
+    }
+  ]
+}
+```
+
+**Features:**
+- Returns most recent adjustments first
+- Populates product details
+- Supports pagination via limit
+- Can filter by product
+
+---
+
 ## 📄 Pages & Routes
 
 ### Public Pages
@@ -859,8 +1012,9 @@ Delete a user permanently.
 |-------|------|-------------|--------|
 | `/dashboard` | `app/dashboard/page.js` | **Dashboard Home** - Overview with welcome message | All Users |
 | `/dashboard/inventory` | `app/dashboard/inventory/page.js` | **Inventory Management** - Products table, add/edit/delete | All Users |
+| `/dashboard/manage-stocks` | `app/dashboard/manage-stocks/page.js` | **Stock Management** - Adjust inventory, view history | All Users |
 | `/dashboard/users` | `app/dashboard/users/page.js` | **User Management** - Staff table, add/edit/delete | **Admin Only** |
-| `/dashboard/settings` | Not implemented | **Settings** (planned) | All Users |
+| `/dashboard/settings` | `app/dashboard/settings/page.js` | **Settings** - User/business settings (basic structure) | All Users |
 
 ---
 
@@ -1350,12 +1504,15 @@ npm run start
 
 ## 🐛 Known Issues & Limitations
 
-### Current State (v0.2.0)
+### Current State (v0.3.0)
 
 **✅ Fully Implemented:**
 - ✅ Business registration and authentication
 - ✅ User management (Create, Read, Update, Delete)
 - ✅ Product management (Create, Read, Update, Delete)
+- ✅ Stock management & adjustments (Stock-In/Stock-Out)
+- ✅ Activity logging (Complete audit trail)
+- ✅ Stock history view with search
 - ✅ Dashboard with collapsible sidebar navigation
 - ✅ Landing page with GSAP animations
 - ✅ Role-based access control (API & UI level)
@@ -1365,12 +1522,12 @@ npm run start
 - ✅ Edit functionality for products and users
 - ✅ Form validations
 - ✅ Admin-only UI controls (Add/Delete buttons)
+- ✅ Settings page (basic structure)
 
 **❌ Not Yet Implemented:**
-- ❌ Activity logging (model exists, not connected to UI)
 - ❌ Dashboard statistics/analytics
-- ❌ Search and filter functionality
-- ❌ Settings page
+- ❌ Advanced filtering (by category, status, etc.)
+- ❌ Settings page functionality (profile management, etc.)
 - ❌ Image upload for products (currently uses placeholder)
 - ❌ Password reset/recovery
 - ❌ Email verification
@@ -1401,17 +1558,20 @@ npm run start
 - ✅ Form validation improvements
 - ✅ Role-based UI controls
 
-### Phase 2: Core Features (Current Focus)
-- [ ] Activity logging implementation
+### Phase 2: Core Features (In Progress)
+- ✅ Activity logging implementation
+- ✅ Stock adjustment system (Stock-in/Stock-out)
+- ✅ Search products (by name/SKU)
 - [ ] Dashboard analytics/statistics
-- [ ] Low stock alerts
-- [ ] Search and filtering
-- [ ] Pagination
+- [ ] Low stock alerts/notifications
+- [ ] Advanced filtering (category, status, date range)
+- [ ] Pagination for large datasets
 - [ ] Bulk operations
 
 ### Phase 3: Enhanced UX
 - [ ] Image upload for products
-- [ ] Settings page (profile, business settings)
+- [ ] Settings page completion (profile, business settings, preferences)
+- ✅ Settings page structure (basic)
 - [ ] Password reset functionality
 - [ ] Email notifications
 - [ ] Export data (CSV, PDF)

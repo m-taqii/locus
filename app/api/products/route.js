@@ -37,7 +37,7 @@ export async function POST(request) {
         }
         const user = session.user;
 
-        if (user.role !== "Admin" && user.role !== "admin") {
+        if (user.role !== "Admin" && user.role !== "Owner") {
             return NextResponse.json({ error: "Unauthorized - Admin access required" }, { status: 401 });
         }
 
