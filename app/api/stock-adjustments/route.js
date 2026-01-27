@@ -110,19 +110,11 @@ export async function GET(request) {
 
     try {
         await connectDb();
+        const userId = session.user.id;
 
-        const { searchParams } = new URL(request.url);
-        const limit = parseInt(searchParams.get('limit')) || 50;
-        const productId = searchParams.get('productId');
-
-        let query = {};
-        if (productId) {
-            query.product = productId;
-        }
-
-        const adjustments = await stockLogs.find(query)
+        const adjustments = await stockLogs.find({ userId: userId })
             .sort({ createdAt: -1 })
-            .limit(limit)
+            .limit(10)
             .populate('product', 'name sku');
 
         return NextResponse.json({ adjustments }, { status: 200 });

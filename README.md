@@ -8,7 +8,7 @@
 ![TailwindCSS](https://img.shields.io/badge/TailwindCSS-4.0-38B2AC?logo=tailwind-css)
 ![NextAuth](https://img.shields.io/badge/NextAuth-4.24.13-blue)
 ![License](https://img.shields.io/badge/License-MIT-green)
-![Version](https://img.shields.io/badge/Version-0.3.0-orange)
+![Version](https://img.shields.io/badge/Version-0.4.0-orange)
 
 **Master Your Inventory** — Precision. Control. Growth.
 
@@ -20,17 +20,20 @@ The operating system for modern commerce.
 
 ---
 
-## 🆕 What's New in v0.3.0
+## 🆕 What's New in v0.4.0
 
-✅ **Stock Management System** - Complete stock-in/stock-out functionality  
-✅ **Activity Logging** - Full audit trail of all stock adjustments  
-✅ **Stock History** - View recent adjustments with timestamps  
-✅ **Search Functionality** - Search products by name or SKU  
-✅ **Real-time Stock Validation** - Prevents negative stock levels  
-✅ **Settings Page** - Basic settings page structure  
-✅ **Enhanced Navigation** - Added "Manage Stocks" menu item  
+✅ **Settings Page Fully Implemented** - Complete user & business management  
+✅ **Profile Management** - Update personal details with avatar upload  
+✅ **Business Settings** - Manage business info, industry, address, tax ID  
+✅ **Security Settings** - Change password with validation  
+✅ **Tabbed Interface** - Clean navigation between Profile, Business, Security  
+✅ **Form Validations** - Password matching, required fields  
 
-**Phase 2 Features In Progress!** Core inventory tracking features are now live.
+**Phase 2 Near Complete!** Most core features are now operational.
+
+### Previous Updates (v0.3.0)
+
+✅ Stock Management System, Activity Logging, Stock History, Search Functionality, Real-time Stock Validation
 
 ### Previous Updates (v0.2.0)
 
@@ -1014,7 +1017,7 @@ Fetch all stock adjustments with optional filtering.
 | `/dashboard/inventory` | `app/dashboard/inventory/page.js` | **Inventory Management** - Products table, add/edit/delete | All Users |
 | `/dashboard/manage-stocks` | `app/dashboard/manage-stocks/page.js` | **Stock Management** - Adjust inventory, view history | All Users |
 | `/dashboard/users` | `app/dashboard/users/page.js` | **User Management** - Staff table, add/edit/delete | **Admin Only** |
-| `/dashboard/settings` | `app/dashboard/settings/page.js` | **Settings** - User/business settings (basic structure) | All Users |
+| `/dashboard/settings` | `app/dashboard/settings/page.js` | **Settings** - Profile, business, security (fully functional) | All Users |
 
 ---
 
@@ -1504,7 +1507,7 @@ npm run start
 
 ## 🐛 Known Issues & Limitations
 
-### Current State (v0.3.0)
+### Current State (v0.4.0)
 
 **✅ Fully Implemented:**
 - ✅ Business registration and authentication
@@ -1522,12 +1525,11 @@ npm run start
 - ✅ Edit functionality for products and users
 - ✅ Form validations
 - ✅ Admin-only UI controls (Add/Delete buttons)
-- ✅ Settings page (basic structure)
+- ✅ Settings page (Profile, Business, Security tabs)
 
 **❌ Not Yet Implemented:**
 - ❌ Dashboard statistics/analytics
 - ❌ Advanced filtering (by category, status, etc.)
-- ❌ Settings page functionality (profile management, etc.)
 - ❌ Image upload for products (currently uses placeholder)
 - ❌ Password reset/recovery
 - ❌ Email verification
@@ -1558,20 +1560,19 @@ npm run start
 - ✅ Form validation improvements
 - ✅ Role-based UI controls
 
-### Phase 2: Core Features (In Progress)
+### Phase 2: Core Features
 - ✅ Activity logging implementation
 - ✅ Stock adjustment system (Stock-in/Stock-out)
 - ✅ Search products (by name/SKU)
+- ✅ Settings page (Profile, Business, Security)
 - [ ] Dashboard analytics/statistics
 - [ ] Low stock alerts/notifications
 - [ ] Advanced filtering (category, status, date range)
-- [ ] Pagination for large datasets
 - [ ] Bulk operations
 
-### Phase 3: Enhanced UX
+### Phase 3: Enhanced UX (Current Focus)
 - [ ] Image upload for products
-- [ ] Settings page completion (profile, business settings, preferences)
-- ✅ Settings page structure (basic)
+- [ ] Pagination for large datasets (tables)
 - [ ] Password reset functionality
 - [ ] Email notifications
 - [ ] Export data (CSV, PDF)
