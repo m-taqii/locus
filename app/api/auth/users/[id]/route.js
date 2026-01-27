@@ -59,6 +59,11 @@ export async function PATCH(request, context) {
         }
 
         const body = await request.json()
+        const existUser = await User.findOne({ email: body.email })
+
+        if (existUser && existUser._id.toString() !== id) {
+            return NextResponse.json({ message: "User already exists with this email" }, { status: 400 })
+        }
 
         // If password is empty or not provided, remove it from the update
         if (!body.password || body.password.trim() === '') {

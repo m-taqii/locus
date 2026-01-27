@@ -59,6 +59,8 @@ const page = () => {
 
       {addProductOpen && <AddProducts setAddProductOpen={setAddProductOpen} />}
 
+      
+
       <table className='w-full mt-5'>
         <thead>
           <tr>
