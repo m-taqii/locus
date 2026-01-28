@@ -41,7 +41,7 @@ export const authOptions = {
         if (!isValid) throw new Error("Invalid password");
 
         return {
-          id: user._id.toString(),
+          id: user._id.toString(), 
           name: user.name,
           email: user.email,
           role: user.role,
@@ -55,9 +55,9 @@ export const authOptions = {
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.id = user.id;                    // MongoDB _id
+        token.id = user.id;                    // MongoDB _id for both user and business
         token.role = user.role;
-        token.businessId = user.businessId;
+        token.businessId = user.businessId;  // businessId for user and _id for business
         token.businessName = user.businessName;
         token.name = user.name;                // User's name
         token.ownerName = user.ownerName;      // Business owner's name
@@ -66,12 +66,12 @@ export const authOptions = {
     },
 
     async session({ session, token }) {
-      session.user.id = token.id;
+      session.user.id = token.id; // MongoDB _id for both user and business
       session.user.role = token.role;
-      session.user.businessId = token.businessId;
+      session.user.businessId = token.businessId; // businessId for user and _id for business
       session.user.businessName = token.businessName;
-      session.user.name = token.name;
-      session.user.ownerName = token.ownerName;
+      session.user.name = token.name; // User's name
+      session.user.ownerName = token.ownerName; // Business owner's name
       return session;
     },
   },
@@ -82,7 +82,7 @@ export const authOptions = {
   pages: {
     signIn: "/login",
   },
-  secret: process.env.NEXTAUTH_SECRET,
+  secret: process.env.NEXTAUTH_SECRET, // required for JWT signing and verification
 };
 
 // export handler for API route

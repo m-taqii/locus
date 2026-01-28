@@ -4,9 +4,8 @@ import { getServerSession } from 'next-auth'
 
 const Navbar = () => {
   const session = getServerSession()
-  console.log(session)
   return (
-    <div className='z-1000 w-full flex justify-between items-center p-4'>
+    <div className='fixed top-0 z-1000 w-full flex justify-between items-center p-4'>
       <Link href="/"><img src="/logo.png" alt="Locus Logo" className='w-20' /></Link>
       <div className='flex gap-3'>
         {session === null ? (
