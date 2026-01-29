@@ -5,9 +5,14 @@ const stockLogsSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
     },
-    bussinessId: {
+    role: {
+        type: String,
+        enum: ["Admin", "Owner", "Staff"],
+        required: true
+    },
+    businessId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Bussiness",
+        ref: "Business",
         required: true
     },
     product: {

@@ -22,13 +22,10 @@ export async function POST(request) {
         userId = session.user.id;
     }
 
-    console.log("User role:", session.user.role, "Business ID:", businessId, "User ID:", userId);
-
     try {
         await connectDb();
 
         const { productId, quantity, type, reason } = await request.json();
-        console.log(productId, quantity, type, reason);
 
         if (!productId || !quantity || !type) {
             return NextResponse.json(
@@ -71,7 +68,8 @@ export async function POST(request) {
 
         const adjustment = await stockLogs.create({
             userId: userId,
-            bussinessId: businessId,
+            role: session.user.role,
+            businessId,
             product: productId,
             productName: product.name,
             quantity,

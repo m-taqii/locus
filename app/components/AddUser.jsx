@@ -38,34 +38,91 @@ const AddUser = ({ setAddUserOpen, setToast }) => {
         setAddUserOpen(false)
     }
     return (
-        <div onClick={handleCancel} className='w-full h-full bg-black/50 absolute top-0 left-0 flex justify-center items-center'>
-            <div onClick={(e) => e.stopPropagation()} className='bg-[#1a1a1e] h-[60vh] w-[30vw] rounded-xl p-4'>
-                <h1 className='bg-linear-to-r from-[#a34b27] to-[#F0A728] bg-clip-text text-4xl text-center m-2 font-bold'>Add User</h1>
+        <div onClick={handleCancel} className='fixed inset-0 bg-black/60 z-50 flex justify-center items-center p-4'>
+            <div onClick={(e) => e.stopPropagation()} className='bg-[#1a1a1e] w-full max-w-sm md:max-w-md rounded-xl flex flex-col p-6 max-h-[90vh] overflow-y-auto border border-white/10'>
+                <h1 className='bg-linear-to-r from-[#a34b27] to-[#F0A728] bg-clip-text text-transparent text-2xl md:text-3xl text-center mb-6 font-bold'>Add User</h1>
 
-                <form onSubmit={handleSubmit} action="" className='flex flex-col justify-center items-center gap-5'>
-                    <input type="text" placeholder='Name' name="name" className='p-2 rounded-lg  bg-white/10 focus:border-[#a34b27] focus:border focus:outline-none focus:shadow focus:shadow-[#a34b27] transition-all duration-300 ease-in-out' onChange={(e) => setUser({ ...user, name: e.target.value })} required />
-                    <input type="email" placeholder='Email' name="email" className='p-2 rounded-lg  bg-white/10 focus:border-[#a34b27] focus:border focus:outline-none focus:shadow focus:shadow-[#a34b27] transition-all duration-300 ease-in-out' onChange={(e) => setUser({ ...user, email: e.target.value })} required />
-                    <input type="password" placeholder='Password' name="password" className='p-2 rounded-lg  bg-white/10 focus:border-[#a34b27] focus:border focus:outline-none focus:shadow focus:shadow-[#a34b27] transition-all duration-300 ease-in-out' onChange={(e) => setUser({ ...user, password: e.target.value })} required />
-                    <div className='flex gap-5'>
+                <form onSubmit={handleSubmit} className='flex flex-col gap-4'>
 
-                        <div className="flex flex-col">
-                            <label htmlFor="role" className="text-xs text-gray-500">Role</label>
-                            <select name="role" onChange={(e) => setUser({ ...user, role: e.target.value })} className='p-2 rounded-lg bg-[#2a2a2e] text-white focus:border-[#a34b27] focus:border focus:outline-none focus:shadow focus:shadow-[#a34b27] transition-all duration-300 ease-in-out' required>
+                    <div className='flex flex-col gap-1'>
+                        <label className='text-xs text-gray-500'>Name</label>
+                        <input
+                            type="text"
+                            placeholder='Enter name'
+                            name="name"
+                            className='p-3 rounded-lg bg-white/10 text-white text-sm focus:border-[#a34b27] focus:border focus:outline-none transition-all duration-300'
+                            onChange={(e) => setUser({ ...user, name: e.target.value })}
+                            required
+                        />
+                    </div>
+
+                    <div className='flex flex-col gap-1'>
+                        <label className='text-xs text-gray-500'>Email</label>
+                        <input
+                            type="email"
+                            placeholder='Enter email'
+                            name="email"
+                            className='p-3 rounded-lg bg-white/10 text-white text-sm focus:border-[#a34b27] focus:border focus:outline-none transition-all duration-300'
+                            onChange={(e) => setUser({ ...user, email: e.target.value })}
+                            required
+                        />
+                    </div>
+
+                    <div className='flex flex-col gap-1'>
+                        <label className='text-xs text-gray-500'>Password</label>
+                        <input
+                            type="password"
+                            placeholder='Enter password'
+                            name="password"
+                            className='p-3 rounded-lg bg-white/10 text-white text-sm focus:border-[#a34b27] focus:border focus:outline-none transition-all duration-300'
+                            onChange={(e) => setUser({ ...user, password: e.target.value })}
+                            required
+                        />
+                    </div>
+
+                    <div className='grid grid-cols-2 gap-4'>
+                        <div className="flex flex-col gap-1">
+                            <label className="text-xs text-gray-500">Role</label>
+                            <select
+                                name="role"
+                                onChange={(e) => setUser({ ...user, role: e.target.value })}
+                                className='p-3 rounded-lg bg-[#2a2a2e] text-white text-sm focus:border-[#a34b27] focus:border focus:outline-none transition-all duration-300'
+                                required
+                            >
                                 <option value="Admin" className="bg-[#1a1a1e] text-white">Admin</option>
                                 <option value="Staff" className="bg-[#1a1a1e] text-white">Staff</option>
                             </select>
                         </div>
 
-                        <div className="flex flex-col">
-                            <label htmlFor="status" className="text-xs text-gray-500">Status</label>
-                            <select name="status" onChange={(e) => setUser({ ...user, status: e.target.value })} className='p-2 rounded-lg bg-[#2a2a2e] text-white focus:border-[#a34b27] focus:border focus:outline-none focus:shadow focus:shadow-[#a34b27] transition-all duration-300 ease-in-out' required>
+                        <div className="flex flex-col gap-1">
+                            <label className="text-xs text-gray-500">Status</label>
+                            <select
+                                name="status"
+                                onChange={(e) => setUser({ ...user, status: e.target.value })}
+                                className='p-3 rounded-lg bg-[#2a2a2e] text-white text-sm focus:border-[#a34b27] focus:border focus:outline-none transition-all duration-300'
+                                required
+                            >
                                 <option value="active" className="bg-[#1a1a1e] text-white">Active</option>
                                 <option value="inactive" className="bg-[#1a1a1e] text-white">Inactive</option>
                             </select>
                         </div>
                     </div>
 
-                    <button type='submit' className='bg-linear-to-r from-[#a34b27] to-[#F0A728] text-white px-5 py-2 rounded-xl flex items-center justify-center font-semibold hover:cursor-pointer hover:shadow-[0_8px_25px_rgba(255,153,51,0.45)] hover:brightness-110 transition-all duration-300 ease-in-out'>{loading ? "Loading..." : "Save"}</button>
+                    <div className='flex gap-3 mt-4'>
+                        <button
+                            type='button'
+                            onClick={handleCancel}
+                            className='flex-1 px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-white/5 transition-all cursor-pointer'
+                        >
+                            Cancel
+                        </button>
+                        <button
+                            type='submit'
+                            className='flex-1 bg-linear-to-r from-[#a34b27] to-[#F0A728] text-white px-4 py-3 rounded-xl font-semibold hover:cursor-pointer hover:shadow-[0_8px_25px_rgba(255,153,51,0.45)] hover:brightness-110 transition-all duration-300 ease-in-out'
+                        >
+                            {loading ? "Saving..." : "Save User"}
+                        </button>
+                    </div>
                 </form>
             </div>
 
