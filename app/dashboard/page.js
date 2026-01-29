@@ -3,13 +3,13 @@ import { useState, useEffect } from 'react'
 import AddProducts from '../components/AddProducts'
 import { useSession } from 'next-auth/react'
 import axios from 'axios'
-import { Handbag, Package2, UsersRound, } from 'lucide-react'
+import { Handbag, Package2, UsersRound, Trophy, Medal, Award } from 'lucide-react'
 
 const page = () => {
   const [addProductOpen, setAddProductOpen] = useState(false)
   const { data: session } = useSession()
   const [dashboardData, setDashboardData] = useState(null)
-
+  const [topSellingStaff, setTopSellingStaff] = useState([])
   const [products, setProducts] = useState([])
   const [loading, setLoading] = useState(true)
 
@@ -19,6 +19,8 @@ const page = () => {
       .then((res) => {
         console.log(res.data);
         setDashboardData(res.data)
+        setProducts(res.data.lowStockProducts)
+        setTopSellingStaff(res.data.topSellingStaff)
       })
       .catch((err) => {
         console.log(err);
@@ -31,17 +33,6 @@ const page = () => {
   useEffect(() => {
     fetchData()
   }, [])
-
-  const handleDeleteProduct = (productId) => {
-    axios.delete(`/api/products/${productId}`, { withCredentials: true })
-      .then((res) => {
-        console.log(res.data);
-        fetchData() // Refresh the products list
-      })
-      .catch((err) => {
-        console.error("Delete error:", err);
-      })
-  }
 
   return (
     <section className='h-full bg-[#1a1a1e] w-full p-4 md:p-6 overflow-y-auto'>
@@ -104,7 +95,7 @@ const page = () => {
           </span>
           <div className='flex flex-col'>
             <p className='text-xs md:text-sm text-gray-400'>Total Products</p>
-            <p className='text-white text-xl md:text-2xl font-bold'>{dashboardData?.products}</p>
+            <p className='text-white text-xl md:text-2xl font-bold'>{dashboardData?.productsCount}</p>
           </div>
         </div>
 
@@ -114,13 +105,13 @@ const page = () => {
       <div className='mb-6'>
         <h2 className='text-lg md:text-xl font-bold text-white mb-4'>Low Stock Products</h2>
 
-        {/* <div className='bg-[#242529] rounded-xl border border-white/5 p-4 md:p-6'>
+        <div className='bg-[#242529] rounded-xl border border-white/5 p-4 md:p-6'>
           {loading ? (
             <div className='flex items-center justify-center py-8'>
               <div className='w-8 h-8 border-2 border-[#F0A728] border-t-transparent rounded-full animate-spin'></div>
             </div>
           ) : products.length === 0 ? (
-            <p className='text-gray-500 text-center py-8'>No low stock products found</p>
+            <p className='text-gray-500 text-center py-8'>All products are well stocked!</p>
           ) : (
             <div className='space-y-3'>
               {products.filter(p => p.quantity <= p.minThreshold).map((product) => (
@@ -140,13 +131,59 @@ const page = () => {
                   </div>
                 </div>
               ))}
-              {products.filter(p => p.quantity <= p.minThreshold).length === 0 && (
-                <p className='text-gray-500 text-center py-4'>All products are well stocked!</p>
-              )}
             </div>
           )}
-        </div> */}
+        </div>
       </div>
+
+      {/* Best Selling Staff Section  */}
+      {(session?.user?.role === "Admin" || session?.user?.role === "Owner") && <div className='mb-6'>
+        <h2 className='text-lg md:text-xl font-bold text-white mb-4'>Best Selling Staff</h2>
+
+        <div className='bg-[#242529] rounded-xl border border-white/5 p-4 md:p-6'>
+          {loading ? (
+            <div className='flex items-center justify-center py-8'>
+              <div className='w-8 h-8 border-2 border-[#F0A728] border-t-transparent rounded-full animate-spin'></div>
+            </div>
+          ) : topSellingStaff.length === 0 ? (
+            <p className='text-gray-500 text-center py-8'>No sales data available!</p>
+          ) : (
+            <div className='space-y-3'>
+              {topSellingStaff.map((staff, index) => {
+                // Different icons and colors for 1st, 2nd, 3rd place
+                const rankStyles = [
+                  { icon: Trophy, bg: 'bg-yellow-900/30', text: 'text-yellow-400' },  // 1st - Gold
+                  { icon: Medal, bg: 'bg-gray-600/30', text: 'text-gray-300' },       // 2nd - Silver
+                  { icon: Award, bg: 'bg-orange-900/30', text: 'text-orange-400' }    // 3rd - Bronze
+                ];
+                const style = rankStyles[index] || rankStyles[2];
+                const IconComponent = style.icon;
+
+                return (
+                  <div key={staff._id || staff.name} className='flex items-center justify-between p-3 bg-[#1a1a1e] rounded-lg'>
+                    <div className='flex items-center gap-3'>
+                      <div className={`w-10 h-10 rounded-lg ${style.bg} flex items-center justify-center relative`}>
+                        <IconComponent size={20} className={style.text} />
+                        <span className={`absolute -top-1 -right-1 w-5 h-5 rounded-full bg-[#242529] border border-white/10 flex items-center justify-center text-xs font-bold ${style.text}`}>
+                          {index + 1}
+                        </span>
+                      </div>
+                      <div>
+                        <p className='text-white font-medium text-sm md:text-base'>{staff.name}</p>
+                        <p className='text-gray-500 text-xs'>{staff.email}</p>
+                      </div>
+                    </div>
+                    <div className='text-right'>
+                      <p className={`font-bold text-sm md:text-base ${style.text}`}>{staff.totalSold} sales</p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+
+        </div>
+      </div>}
 
     </section>
 

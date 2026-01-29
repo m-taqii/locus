@@ -8,7 +8,7 @@
 ![TailwindCSS](https://img.shields.io/badge/TailwindCSS-4.0-38B2AC?logo=tailwind-css)
 ![NextAuth](https://img.shields.io/badge/NextAuth-4.24.13-blue)
 ![License](https://img.shields.io/badge/License-MIT-green)
-![Version](https://img.shields.io/badge/Version-0.4.0-orange)
+![Version](https://img.shields.io/badge/Version-0.5.0-orange)
 
 **Master Your Inventory** — Precision. Control. Growth.
 
@@ -20,16 +20,22 @@ The operating system for modern commerce.
 
 ---
 
-## 🆕 What's New in v0.4.0
+## 🆕 What's New in v0.5.0
 
-✅ **Settings Page Fully Implemented** - Complete user & business management  
-✅ **Profile Management** - Update personal details with avatar upload  
-✅ **Business Settings** - Manage business info, industry, address, tax ID  
-✅ **Security Settings** - Change password with validation  
-✅ **Tabbed Interface** - Clean navigation between Profile, Business, Security  
-✅ **Form Validations** - Password matching, required fields  
+🎉 **Dashboard Analytics Now Live!** Real-time business insights at your fingertips.
 
-**Phase 2 Near Complete!** Most core features are now operational.
+✅ **Dashboard Statistics** - View active users, total sales, and product counts  
+✅ **Low Stock Alerts** - Visual alerts for products below threshold  
+✅ **Best Selling Staff Leaderboard** - Track top performers with rankings  
+✅ **Dashboard API** - New `/api/dashboard` endpoint with aggregated data  
+✅ **Owner Role** - New role with full business access  
+✅ **Role-Based Dashboard** - Owners/Admins see team stats, Staff sees personal stats  
+
+**Phase 3 in progress!** Dashboard analytics and low stock alerts are now operational.
+
+### Previous Updates (v0.4.0)
+
+✅ Settings Page (Profile, Business, Security tabs), Form Validations, Tabbed Interface
 
 ### Previous Updates (v0.3.0)
 
@@ -37,14 +43,7 @@ The operating system for modern commerce.
 
 ### Previous Updates (v0.2.0)
 
-✅ **Full CRUD Implementation** - Complete Create, Read, Update, Delete for Products & Users  
-✅ **Edit Modals** - Pre-populated forms for updating products and users  
-✅ **Delete Confirmations** - Safety dialogs before permanent deletion  
-✅ **Toast Notifications** - Real-time success/error feedback system  
-✅ **Role-Based UI Controls** - Admin-only buttons for Add/Delete operations  
-✅ **Enhanced UX** - Smoother user experience with loading states and auto-refresh  
-✅ **API Routes Expansion** - Added PATCH and DELETE endpoints for dynamic routes  
-✅ **Password Management** - Optional password updates in user edit (leave blank to keep current)
+✅ Full CRUD, Edit Modals, Delete Confirmations, Toast Notifications, Role-Based UI Controls
 
 ---
 
@@ -73,17 +72,22 @@ The operating system for modern commerce.
 
 **Locus** is a modern, full-stack inventory management SaaS application built with Next.js 16 (App Router), React 19, and MongoDB. It provides businesses with a comprehensive platform to manage their inventory, track products, manage users, and maintain detailed logs of inventory operations.
 
+**v0.5.0** brings real-time dashboard analytics with statistics, low stock alerts, and staff performance tracking. Locus now includes all essential features for inventory operations plus business intelligence.
+
 The application features a **dark-themed UI** with stunning **GSAP animations**, **glassmorphism effects**, and a premium amber/orange gradient color scheme that creates an engaging user experience.
 
 ### Key Highlights
 
 - 🏢 **Multi-tenant Architecture** - Each business has its own isolated data
 - 🔐 **Secure Authentication** - NextAuth.js with JWT session management
-- 👥 **Role-Based Access Control** - Admin and Staff user roles with UI-level permissions
+- 👥 **Role-Based Access Control** - Owner, Admin, and Staff roles with UI-level permissions
 - 📦 **Complete Inventory Management** - Track products with categories, SKUs, and thresholds
-- 📊 **Stock Management System** - Adjust inventory with stock-in/stock-out operations
+- 📊 **Dashboard Analytics** - Real-time statistics, sales tracking, and performance metrics
+- 🚨 **Low Stock Alerts** - Visual alerts for products below minimum threshold
+- 🏆 **Staff Leaderboard** - Track top performing staff by sales
 - 📝 **Activity Logging** - Complete audit trail of all inventory movements
 - 🔍 **Search & Filter** - Find products quickly by name or SKU
+- ⚙️ **Settings Management** - Complete profile, business, and security settings
 - 📱 **Real-time Updates** - Dynamic data fetching and instant UI refresh
 - 🎨 **Modern UI/UX** - Scroll-triggered animations, parallax effects, and glassmorphism
 
@@ -100,9 +104,11 @@ The application features a **dark-themed UI** with stunning **GSAP animations**,
 - **Password Encryption** using bcrypt (10 rounds of hashing)
 - **Protected API Routes** with server-side session validation
 - **Role-Based Access Control:**
-  - **API Level:** Admin-only routes for create/delete operations
-  - **UI Level:** Conditional rendering of Admin-only buttons
-  - **Granular Permissions:** Staff can view/edit, Admins have full control
+  - **Owner Role:** Full business access, sees all team statistics
+  - **Admin Role:** Manage users and products, full CRUD access
+  - **Staff Role:** View products, perform stock operations, see personal stats
+  - **API Level:** Owner/Admin-only routes for create/delete operations
+  - **UI Level:** Conditional rendering based on user role
 - **Session Callbacks** for custom user data in sessions
 
 ### 📦 Inventory Management
@@ -145,6 +151,28 @@ The application features a **dark-themed UI** with stunning **GSAP animations**,
   - Business association (ObjectId reference)
 - **Business Isolation** - Users can only see data from their own business
 - **Admin-Only Features** - User management restricted to admins
+
+### 📊 Dashboard Analytics
+
+- **Statistics Cards:**
+  - Active Users count (Owner/Admin only)
+  - Total Sales (stock-out quantities)
+  - Total Products in inventory
+- **Low Stock Alerts Section:**
+  - Visual list of products below minimum threshold
+  - Shows current quantity and minimum threshold
+  - Color-coded warnings (red for critical)
+  - Category display for quick identification
+- **Best Selling Staff Leaderboard (Owner/Admin only):**
+  - Top 3 staff members ranked by sales
+  - Gold, Silver, Bronze ranking indicators
+  - Total sales count per staff member
+  - Visual icons (Trophy, Medal, Award)
+- **Role-Based Dashboard Views:**
+  - **Owner/Admin:** See all team statistics and leaderboard
+  - **Staff:** See personal sales and available products
+- **Real-time Data:** Dashboard refreshes with latest data on load
+- **Quick Actions:** Add Product button from dashboard (Owner/Admin only)
 
 ### 📊 Stock Management & Activity Logging
 
@@ -242,12 +270,14 @@ locus/
 │   │   │       ├── route.js       # GET/POST - Fetch/Create users
 │   │   │       └── [id]/          # Dynamic user routes
 │   │   │           └── route.js   # PATCH/DELETE - Update/Delete user
-│   │   └── products/              # Product management
-│   │       ├── route.js           # GET/POST - Fetch/Create products
-│   │       └── [id]/              # Dynamic product routes
-│   │           └── route.js       # PATCH/DELETE - Update/Delete product
-│   └── stock-adjustments/     # Stock management
-│       └── route.js           # GET/POST - Fetch/Create stock adjustments
+│   │   ├── products/              # Product management
+│   │   │   ├── route.js           # GET/POST - Fetch/Create products
+│   │   │   └── [id]/              # Dynamic product routes
+│   │   │       └── route.js       # PATCH/DELETE - Update/Delete product
+│   │   ├── dashboard/             # Dashboard analytics
+│   │   │   └── route.js           # GET - Fetch dashboard statistics
+│   │   └── stock-adjustments/     # Stock management
+│   │       └── route.js           # GET/POST - Fetch/Create stock adjustments
 │   │
 │   ├── components/                # Reusable React components
 │   │   ├── AddProducts.jsx        # Product creation modal form
@@ -501,23 +531,25 @@ Stores inventory product information.
 
 ---
 
-### 4. StockLogs Model ✅ IMPLEMENTED
+### 4. StockLogs Model
 **File:** `models/stockLogs.model.js`
 
 Tracks all stock adjustments and inventory movements.
 
 ```javascript
 {
-  userId: ObjectId (required, ref: "User"),       // Who made the adjustment
-  product: ObjectId (required, ref: "Product"),   // Which product
-  productName: String (required),                 // Product name snapshot
-  quantity: Number (required),                    // Amount adjusted
+  userId: ObjectId (ref: "User"),                   // Who made the adjustment
+  role: String (enum: ["Admin", "Owner", "Staff"], required), // User's role
+  businessId: ObjectId (required, ref: "Business"), // Business reference
+  product: ObjectId (required, ref: "Product"),     // Which product
+  productName: String (required),                   // Product name snapshot
+  quantity: Number (required),                      // Amount adjusted
   type: String (enum: ["stock-in", "stock-out"], required), // Adjustment type
-  reason: String (default: "Stock adjustment"),   // Optional reason/notes
-  previousQuantity: Number (required),            // Stock before adjustment
-  newQuantity: Number (required),                 // Stock after adjustment
-  createdAt: Date,                                // Auto-generated timestamp
-  updatedAt: Date                                 // Auto-generated
+  reason: String (default: "Stock adjustment"),     // Optional reason/notes
+  previousQuantity: Number (required),              // Stock before adjustment
+  newQuantity: Number (required),                   // Stock after adjustment
+  createdAt: Date,                                  // Auto-generated timestamp
+  updatedAt: Date                                   // Auto-generated
 }
 ```
 
@@ -526,11 +558,73 @@ Tracks all stock adjustments and inventory movements.
 - Captures before/after quantities for verification
 - Supports custom reasons for adjustments
 - Automatic timestamp tracking
-- Used for "Manage Stocks" page history view
+- Business isolation for multi-tenant queries
+- Role tracking for analytics and leaderboard
+- Used for Dashboard analytics and "Manage Stocks" page
 
 ---
 
 ## 🛣️ API Routes
+
+### Dashboard Routes
+
+#### `GET /api/dashboard`
+**File:** `app/api/dashboard/route.js`
+
+Fetch dashboard statistics and analytics data.
+
+**Headers:** Requires authenticated session
+
+**Response (Success - Owner/Admin):**
+```json
+{
+  "productsCount": 150,
+  "users": 12,
+  "totalSold": 1250,
+  "lowStockProducts": [
+    {
+      "_id": "507f1f77bcf86cd799439013",
+      "name": "Laptop",
+      "quantity": 5,
+      "minThreshold": 10,
+      "category": "Electronics"
+    }
+  ],
+  "topSellingStaff": [
+    {
+      "userId": "507f1f77bcf86cd799439012",
+      "name": "John Smith",
+      "email": "john@example.com",
+      "role": "Staff",
+      "totalSold": 450
+    }
+  ]
+}
+```
+
+**Response (Success - Staff):**
+```json
+{
+  "productsCount": 150,
+  "totalSold": 75,
+  "lowStockProducts": [...]
+}
+```
+
+**Features:**
+- **Owner/Admin View:**
+  - Active users count (business-wide)
+  - Total sales (all stock-out operations)
+  - Low stock products (below threshold)
+  - Top 3 selling staff with leaderboard
+- **Staff View:**
+  - Total products available
+  - Personal sales count only
+  - Low stock products
+- Uses MongoDB aggregation for efficient queries
+- Business isolation via businessId
+
+---
 
 ### Authentication Routes
 
@@ -1254,6 +1348,70 @@ setToast({
 )}
 ```
 
+#### `Settings Page`
+**Location:** `app/dashboard/settings/page.js`
+
+**Features:**
+- **Three-Tab Interface:** Profile, Business, Security
+- **Profile Management:**
+  - Update user name and email
+  - Avatar upload placeholder
+  - Phone number field
+  - Location information
+  - Session-aware data loading
+- **Business Settings:**
+  - Business name and industry
+  - Tax ID/Business registration
+  - Full address (street, city, state, zip, country)
+  - Email and phone contacts
+  - Timezone selection
+- **Security Settings:**
+  - Change password functionality
+  - Current password verification
+  - New password with confirmation
+  - Password strength validation
+  - Password matching validation
+- **Success Feedback:**
+  - Toast notifications on save
+  - Loading states during updates
+  - Auto-populated from session
+
+**State Management:**
+```javascript
+const [activeTab, setActiveTab] = useState('profile')
+const [profileData, setProfileData] = useState({
+  name: session?.user?.name || '',
+  email: session?.user?.email || '',
+  phone: '',
+  location: ''
+})
+const [businessData, setBusinessData] = useState({
+  businessName: session?.user?.businessName || '',
+  industry: '',
+  taxId: '',
+  // ... address fields
+})
+const [passwordData, setPasswordData] = useState({
+  currentPassword: '',
+  newPassword: '',
+  confirmPassword: ''
+})
+```
+
+**API Integration:**
+- Currently uses simulated save (setTimeout)
+- Ready for API endpoints:
+  - `PATCH /api/auth/profile` - Update profile
+  - `PATCH /api/businesses/${id}` - Update business
+  - `POST /api/auth/change-password` - Change password
+
+**Icons Used (Lucide):**
+- `User` - Profile tab
+- `Building2` - Business tab
+- `Lock` - Security tab
+- `Camera` - Avatar upload
+- `Save` - Save buttons
+
 ---
 
 ## 🔑 Authentication Flow
@@ -1507,7 +1665,7 @@ npm run start
 
 ## 🐛 Known Issues & Limitations
 
-### Current State (v0.4.0)
+### Current State (v0.5.0)
 
 **✅ Fully Implemented:**
 - ✅ Business registration and authentication
@@ -1526,15 +1684,16 @@ npm run start
 - ✅ Form validations
 - ✅ Admin-only UI controls (Add/Delete buttons)
 - ✅ Settings page (Profile, Business, Security tabs)
+- ✅ Dashboard analytics (statistics, low stock alerts)
+- ✅ Best selling staff leaderboard
+- ✅ Owner role with full business access
 
 **❌ Not Yet Implemented:**
-- ❌ Dashboard statistics/analytics
 - ❌ Advanced filtering (by category, status, etc.)
 - ❌ Image upload for products (currently uses placeholder)
 - ❌ Password reset/recovery
 - ❌ Email verification
 - ❌ Pagination for tables
-- ❌ Low stock alerts/notifications
 - ❌ Export functionality (CSV/PDF)
 - ❌ Bulk operations (multi-select delete/update)
 - ❌ Product categories management (hardcoded list)
@@ -1560,17 +1719,23 @@ npm run start
 - ✅ Form validation improvements
 - ✅ Role-based UI controls
 
-### Phase 2: Core Features
+### Phase 2: Core Features ✅ COMPLETE
 - ✅ Activity logging implementation
 - ✅ Stock adjustment system (Stock-in/Stock-out)
 - ✅ Search products (by name/SKU)
 - ✅ Settings page (Profile, Business, Security)
-- [ ] Dashboard analytics/statistics
-- [ ] Low stock alerts/notifications
-- [ ] Advanced filtering (category, status, date range)
-- [ ] Bulk operations
+- ✅ Dashboard with collapsible sidebar
+- ✅ Role-based access control (UI + API)
+- ✅ Toast notifications system
+- ✅ Complete audit trail
 
 ### Phase 3: Enhanced UX (Current Focus)
+- ✅ Dashboard analytics/statistics
+- ✅ Low stock alerts/notifications
+- ✅ Best selling staff leaderboard
+- ✅ Owner role implementation
+- [ ] Advanced filtering (category, status, date range)
+- [ ] Bulk operations (multi-select)
 - [ ] Image upload for products
 - [ ] Pagination for large datasets (tables)
 - [ ] Password reset functionality
@@ -1608,7 +1773,7 @@ npm run start
 
 ## 🤝 Contributing
 
-Contributions are welcome! This project is currently open-source and we encourage community involvement.
+Contributions are welcome! This project is open-source and we encourage community involvement.
 
 ### How to Contribute
 
@@ -1675,9 +1840,7 @@ test: Add unit tests for auth
 
 ## 📄 License
 
-This project is currently open-source under the [MIT License](LICENSE).
-
-> **⚠️ Note:** This project is in active development and will eventually become a complete SaaS product. The licensing terms may change in future versions as we transition to a commercial model.
+This project is licensed under the [MIT License](LICENSE).
 
 **MIT License Summary:**
 - ✅ Commercial use allowed

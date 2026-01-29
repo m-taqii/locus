@@ -12,7 +12,6 @@ const page = () => {
   const [profile, setProfile] = useState({
     name: session?.user?.name || '',
     email: session?.user?.email || '',
-    phone: '',
     role: session?.user?.role || '',
     avatar: ''
   })
@@ -176,16 +175,7 @@ const page = () => {
                       className='p-3 rounded-lg bg-[#2a2a2e] text-white focus:border-[#a34b27] focus:border focus:outline-none transition-all'
                     />
                   </div>
-                  <div className='flex flex-col gap-2'>
-                    <label className='text-sm text-gray-400'>Phone Number</label>
-                    <input
-                      type="tel"
-                      value={profile.phone}
-                      onChange={(e) => setProfile({ ...profile, phone: e.target.value })}
-                      placeholder='+1 (555) 000-0000'
-                      className='p-3 rounded-lg bg-[#2a2a2e] text-white focus:border-[#a34b27] focus:border focus:outline-none transition-all'
-                    />
-                  </div>
+
                   <div className='flex flex-col gap-2'>
                     <label className='text-sm text-gray-400'>Role</label>
                     <input
