@@ -1,29 +1,31 @@
 "use client"
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { User, Building2, Bell, Lock, Palette, Save, Camera } from 'lucide-react'
 import { useSession } from 'next-auth/react'
+import Toast from '@/app/components/Toast'
+import axios from 'axios'
 
 const page = () => {
-  const { data: session } = useSession()
+  const { data: session, status } = useSession()
   const [activeTab, setActiveTab] = useState('profile')
   const [loading, setLoading] = useState(false)
+  const [response, setResponse] = useState(null)
 
   // Profile state
   const [profile, setProfile] = useState({
-    name: session?.user?.name || '',
-    email: session?.user?.email || '',
-    role: session?.user?.role || '',
+    name: '',
+    email: '',
+    role: '',
     avatar: ''
   })
 
   // Business state
   const [business, setBusiness] = useState({
-    businessName: session?.user?.businessName || '',
+    businessName: '',
     industry: '',
     address: '',
     city: '',
     country: '',
-    taxId: '',
     website: ''
   })
 
@@ -34,60 +36,107 @@ const page = () => {
     confirmPassword: ''
   })
 
-  // Notification preferences
-  const [notifications, setNotifications] = useState({
-    emailNotifications: true,
-    lowStockAlerts: true,
-    orderUpdates: true,
-    weeklyReports: false,
-    marketingEmails: false
-  })
+  const [toast, setToast] = useState(null)
 
-  // Theme preferences
-  const [theme, setTheme] = useState('dark')
+  // Sync state with session when session becomes available
+  useEffect(() => {
+    if (session?.user) {
+      setProfile(prev => ({
+        ...prev,
+        name: session.user.name || '',
+        email: session.user.email || '',
+        role: session.user.role || ''
+      }))
+      setBusiness(prev => ({
+        ...prev,
+        businessName: session.user.businessName || ''
+      }))
+    }
+  }, [session])
 
   const handleSaveProfile = (e) => {
     e.preventDefault()
     setLoading(true)
-    
-    setTimeout(() => {
-      setLoading(false)
-      alert('Profile saved! (API not implemented yet)')
-    }, 1000)
+
+    axios.patch(`/api/settings/account?account=profile`, profile, { withCredentials: true })
+      .then(res => {
+        console.log(res.data)
+        setResponse(res.data.message)
+        setToast && setToast({
+          message: res.data?.message || 'Profile updated successfully',
+          type: 'success'
+        })
+      })
+      .catch(err => {
+        console.log(err)
+        setResponse(err.response.data.message)
+        setToast && setToast({
+          message: err.response?.data?.message || 'Failed to update profile',
+          type: 'error'
+        })
+      })
+      .finally(() => {
+        setLoading(false)
+      })
   }
 
   const handleSaveBusiness = (e) => {
     e.preventDefault()
     setLoading(true)
 
-    setTimeout(() => {
-      setLoading(false)
-      alert('Business settings saved! (API not implemented yet)')
-    }, 1000)
+    axios.patch(`/api/settings/account?account=business`, business, { withCredentials: true })
+      .then(res => {
+        console.log(res.data)
+        setResponse(res.data.message)
+        setToast && setToast({
+          message: res.data?.message || 'Business updated successfully',
+          type: 'success'
+        })
+      })
+      .catch(err => {
+        console.log(err)
+        setResponse(err.response.data.message)
+        setToast && setToast({
+          message: err.response?.data?.message || 'Failed to update business',
+          type: 'error'
+        })
+      })
+      .finally(() => {
+        setLoading(false)
+      })
   }
 
   const handleChangePassword = (e) => {
     e.preventDefault()
     if (password.newPassword !== password.confirmPassword) {
-      alert('Passwords do not match!')
+      setToast({
+        message: 'Passwords do not match!',
+        type: 'error'
+      })
       return
     }
     setLoading(true)
 
-    setTimeout(() => {
-      setLoading(false)
-      setPassword({ currentPassword: '', newPassword: '', confirmPassword: '' })
-      alert('Password changed! (API not implemented yet)')
-    }, 1000)
-  }
-
-  const handleSaveNotifications = () => {
-    setLoading(true)
-
-    setTimeout(() => {
-      setLoading(false)
-      alert('Notification preferences saved! (API not implemented yet)')
-    }, 1000)
+    axios.patch(`/api/settings/account?account=password`, password, { withCredentials: true })
+      .then(res => {
+        console.log(res.data)
+        setResponse(res.data.message)
+        setToast && setToast({
+          message: res.data?.message || 'Password changed successfully',
+          type: 'success'
+        })
+      })
+      .catch(err => {
+        console.log(err)
+        setResponse(err.response.data.message)
+        setToast && setToast({
+          message: err.response?.data?.message || 'Failed to update password',
+          type: 'error'
+        })
+      })
+      .finally(() => {
+        setLoading(false)
+      })
   }
 
   const tabs = [
@@ -107,22 +156,36 @@ const page = () => {
         {/* Sidebar Tabs */}
         <div className='md:col-span-1 bg-[#121214] rounded-2xl p-4 h-fit'>
           <nav className='flex flex-col gap-2'>
-            {tabs.map((tab) => {
-              const Icon = tab.icon
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center gap-3 p-3 rounded-lg transition-all duration-200 ${activeTab === tab.id
-                      ? 'bg-linear-to-r from-[#a34b27] to-[#F0A728] text-white'
-                      : 'text-gray-400 hover:bg-[#2a2a2e] hover:text-white'
-                    }`}
-                >
-                  <Icon className='w-5 h-5' />
-                  <span className='font-medium'>{tab.label}</span>
-                </button>
-              )
-            })}
+            <button
+              onClick={() => setActiveTab("profile")}
+              className={`flex items-center gap-3 p-3 rounded-lg transition-all duration-200 ${activeTab === "profile"
+                ? 'bg-linear-to-r from-[#a34b27] to-[#F0A728] text-white'
+                : 'text-gray-400 hover:bg-[#2a2a2e] hover:text-white'
+                }`}
+            >
+              <User className='w-5 h-5' />
+              <span className='font-medium'>Profile</span>
+            </button>
+            {session?.user?.role === "Owner" && <button
+              onClick={() => setActiveTab("business")}
+              className={`flex items-center gap-3 p-3 rounded-lg transition-all duration-200 ${activeTab === "business"
+                ? 'bg-linear-to-r from-[#a34b27] to-[#F0A728] text-white'
+                : 'text-gray-400 hover:bg-[#2a2a2e] hover:text-white'
+                }`}
+            >
+              <Building2 className='w-5 h-5' />
+              <span className='font-medium'>Business</span>
+            </button>}
+            <button
+              onClick={() => setActiveTab("security")}
+              className={`flex items-center gap-3 p-3 rounded-lg transition-all duration-200 ${activeTab === "security"
+                ? 'bg-linear-to-r from-[#a34b27] to-[#F0A728] text-white'
+                : 'text-gray-400 hover:bg-[#2a2a2e] hover:text-white'
+                }`}
+            >
+              <Lock className='w-5 h-5' />
+              <span className='font-medium'>Security</span>
+            </button>
           </nav>
         </div>
 
@@ -200,7 +263,7 @@ const page = () => {
           )}
 
           {/* Business Tab */}
-          {activeTab === 'business' && (
+          {(activeTab === 'business' && session?.user?.role === 'Owner') && (
             <div className='space-y-6'>
               <div>
                 <h2 className='text-xl font-bold text-white mb-2'>Business Information</h2>
@@ -208,6 +271,7 @@ const page = () => {
               </div>
 
               <form onSubmit={handleSaveBusiness} className='space-y-4'>
+
                 <div className='grid md:grid-cols-2 grid-cols-1 gap-4'>
                   <div className='flex flex-col gap-2 md:col-span-2'>
                     <label className='text-sm text-gray-400'>Business Name</label>
@@ -218,6 +282,7 @@ const page = () => {
                       className='p-3 rounded-lg bg-[#2a2a2e] text-white focus:border-[#a34b27] focus:border focus:outline-none transition-all'
                     />
                   </div>
+
                   <div className='flex flex-col gap-2'>
                     <label className='text-sm text-gray-400'>Industry</label>
                     <select
@@ -233,16 +298,7 @@ const page = () => {
                       <option value="other">Other</option>
                     </select>
                   </div>
-                  <div className='flex flex-col gap-2'>
-                    <label className='text-sm text-gray-400'>Tax ID / EIN</label>
-                    <input
-                      type="text"
-                      value={business.taxId}
-                      onChange={(e) => setBusiness({ ...business, taxId: e.target.value })}
-                      placeholder='XX-XXXXXXX'
-                      className='p-3 rounded-lg bg-[#2a2a2e] text-white focus:border-[#a34b27] focus:border focus:outline-none transition-all'
-                    />
-                  </div>
+
                   <div className='flex flex-col gap-2 md:col-span-2'>
                     <label className='text-sm text-gray-400'>Business Address</label>
                     <input
@@ -253,6 +309,7 @@ const page = () => {
                       className='p-3 rounded-lg bg-[#2a2a2e] text-white focus:border-[#a34b27] focus:border focus:outline-none transition-all'
                     />
                   </div>
+
                   <div className='flex flex-col gap-2'>
                     <label className='text-sm text-gray-400'>City</label>
                     <input
@@ -262,6 +319,7 @@ const page = () => {
                       className='p-3 rounded-lg bg-[#2a2a2e] text-white focus:border-[#a34b27] focus:border focus:outline-none transition-all'
                     />
                   </div>
+
                   <div className='flex flex-col gap-2'>
                     <label className='text-sm text-gray-400'>Country</label>
                     <input
@@ -271,6 +329,7 @@ const page = () => {
                       className='p-3 rounded-lg bg-[#2a2a2e] text-white focus:border-[#a34b27] focus:border focus:outline-none transition-all'
                     />
                   </div>
+
                   <div className='flex flex-col gap-2 md:col-span-2'>
                     <label className='text-sm text-gray-400'>Website</label>
                     <input
@@ -356,6 +415,7 @@ const page = () => {
 
         </div>
       </div>
+      {toast && <Toast message={toast.message} type={toast.type} />}
     </section>
   )
 }
