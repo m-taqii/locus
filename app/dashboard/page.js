@@ -17,13 +17,11 @@ const page = () => {
     setLoading(true)
     axios.get("/api/dashboard", { withCredentials: true })
       .then((res) => {
-        console.log(res.data);
         setDashboardData(res.data)
         setProducts(res.data.lowStockProducts)
         setTopSellingStaff(res.data.topSellingStaff)
       })
-      .catch((err) => {
-        console.log(err);
+      .catch(() => {
       })
       .finally(() => {
         setLoading(false)

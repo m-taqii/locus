@@ -35,13 +35,14 @@ export async function POST(request) {
         if (!session) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
-        const user = session.user;
+        const isOwner = session.user.role === "Owner"
+        const userId = isOwner ? session.user.id : session.user.businessId;
 
-        if (user.role !== "Admin" && user.role !== "Owner") {
+        if (session.user.role !== "Admin" && !isOwner) {
             return NextResponse.json({ error: "Unauthorized - Admin access required" }, { status: 401 });
         }
 
-        const newProduct = await Product.create({ name, price, quantity, minThreshold, sku, category, status, owner: user.id });
+        const newProduct = await Product.create({ name, price, quantity, minThreshold, sku, category, status, owner: userId });
         return NextResponse.json(newProduct, { message: "Product created successfully", status: 201 });
     } catch (error) {
         console.error("Create product error:", error);

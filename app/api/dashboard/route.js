@@ -89,7 +89,7 @@ export const GET = async () => {
             return NextResponse.json({ productsCount, totalSold, lowStockProducts })
         }
     } catch (error) {
-        console.log(error)
+        console.error('Dashboard GET error:', error)
         return NextResponse.json({ error: "Internal Server Error" }, { status: 500 })
     }
 }

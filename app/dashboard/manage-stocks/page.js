@@ -26,7 +26,6 @@ const page = () => {
                 setProducts(res.data.products || [])
             })
             .catch((err) => {
-                console.log(err)
                 setToast({
                     message: err.response?.data?.message || 'Failed to fetch products',
                     type: 'error'
@@ -39,8 +38,7 @@ const page = () => {
             .then((res) => {
                 setStockHistory(res.data.adjustments || [])
             })
-            .catch((err) => {
-                console.log(err)
+            .catch(() => {
             })
     }
 

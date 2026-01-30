@@ -30,11 +30,9 @@ const page = () => {
     setLoading(true)
     axios.get("/api/auth/users", { withCredentials: true })
       .then((res) => {
-        console.log(res.data);
         setUsers(res.data.users || [])
       })
       .catch((err) => {
-        console.log(err);
         setToast({
           message: err.response?.data?.message || 'Failed to fetch users',
           type: 'error'
@@ -49,7 +47,6 @@ const page = () => {
 
     axios.delete(`/api/auth/users/${userId}`, { withCredentials: true })
       .then((res) => {
-        console.log(res.data);
         setToast({
           message: res.data?.message || 'User deleted successfully',
           type: 'success'
@@ -57,7 +54,6 @@ const page = () => {
         fetchUsers()
       })
       .catch((err) => {
-        console.log(err);
         setToast({
           message: err.response?.data?.message || 'Failed to delete user',
           type: 'error'

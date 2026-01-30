@@ -17,15 +17,13 @@ const AddUser = ({ setAddUserOpen, setToast }) => {
         setLoading(true);
         try {
             const res = await axios.post("/api/auth/users", user, { withCredentials: true })
-            console.log(res.data);
             setLoading(false);
             setToast && setToast({
                 message: res.data?.message || 'User created successfully',
                 type: 'success'
             })
-            setAddUserOpen(true) // Pass true to trigger refetch
+            setAddUserOpen(true) 
         } catch (err) {
-            console.log(err);
             setLoading(false);
             setToast && setToast({
                 message: err.response?.data?.message || 'Failed to create user',

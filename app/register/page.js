@@ -24,7 +24,6 @@ const Register = () => {
             // Register the business
             const res = await axios.post("/api/auth/registerBusiness", formData);
             setError(null);
-            console.log(res.data);
 
             // Automatically log in the user
             const signInResult = await signIn("credentials", {

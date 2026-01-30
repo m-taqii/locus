@@ -23,12 +23,9 @@ const page = () => {
     setLoading(true)
     axios.get("/api/products", { withCredentials: true })
       .then((res) => {
-        console.log(res.data);
         setProducts(res.data.products || [])
-        console.log(products);
       })
       .catch((err) => {
-        console.log(err);
         setToast({
           message: err.response?.data?.message || 'Failed to fetch products',
           type: 'error'
@@ -46,7 +43,6 @@ const page = () => {
   const handleDeleteProduct = (id) => {
     axios.delete(`/api/products/${id}`, { withCredentials: true })
       .then((res) => {
-        console.log(res.data);
         setToast({
           message: res.data?.message || 'Product deleted successfully',
           type: 'success'
@@ -54,7 +50,6 @@ const page = () => {
         fetchProducts()
       })
       .catch((err) => {
-        console.log(err);
         setToast({
           message: err.response?.data?.message || 'Failed to delete product',
           type: 'error'

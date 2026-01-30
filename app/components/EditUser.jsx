@@ -10,7 +10,6 @@ const EditUser = ({ setEditUserOpen, user, fetchUsers, setToast }) => {
         setLoading(true)
         axios.patch(`/api/auth/users/${editUser._id}`, editUser, { withCredentials: true })
             .then((res) => {
-                console.log(res.data);
                 setToast({
                     message: res.data?.message || 'User updated successfully',
                     type: 'success'
@@ -18,7 +17,6 @@ const EditUser = ({ setEditUserOpen, user, fetchUsers, setToast }) => {
                 fetchUsers()
             })
             .catch((err) => {
-                console.log(err);
                 setToast({
                     message: err.response?.data?.message || 'Failed to update user',
                     type: 'error'

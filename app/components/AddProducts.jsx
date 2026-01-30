@@ -21,16 +21,14 @@ const AddProducts = ({ setAddProductOpen, setToast }) => {
         setLoading(true)
         axios.post("/api/products", formData, { withCredentials: true })
             .then(res => {
-                console.log(res.data)
                 setresponse(res.data.message)
                 setToast && setToast({
                     message: res.data?.message || 'Product created successfully',
                     type: 'success'
                 })
-                setAddProductOpen(true) // Pass true to trigger refetch
+                setAddProductOpen(true) 
             })
             .catch(err => {
-                console.log(err)
                 setresponse(err.response.data.message)
                 setToast && setToast({
                     message: err.response?.data?.message || 'Failed to create product',

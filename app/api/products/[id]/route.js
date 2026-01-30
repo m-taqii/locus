@@ -7,13 +7,13 @@ import mongoose from "mongoose";
 
 export async function DELETE(request, context) {
     const session = await getServerSession(authOptions)
-    const { id } = await context.params  
+    const { id } = await context.params
 
     if (!session) {
         return NextResponse.json({ message: "Unauthorized" }, { status: 401 })
     }
-    if(session.user.role !=="Admin" && session.user.role !=="Owner"){
-        return NextResponse.json({message: "Unauthorized - Admin access required"}, {status: 401})
+    if (session.user.role !== "Admin" && session.user.role !== "Owner") {
+        return NextResponse.json({ message: "Unauthorized - Admin access required" }, { status: 401 })
     }
 
     try {
@@ -38,16 +38,16 @@ export async function DELETE(request, context) {
 }
 
 
-export async function PATCH(request, context){
+export async function PATCH(request, context) {
     const session = await getServerSession(authOptions)
     const { id } = await context.params
-    
-    if(!session){
-        return NextResponse.json({message: "Unauthorized"}, {status: 401})
+
+    if (!session) {
+        return NextResponse.json({ message: "Unauthorized" }, { status: 401 })
     }
 
-    if(session.user.role !=="Admin" && session.user.role !=="Owner"){
-        return NextResponse.json({message: "Unauthorized - Admin access required"}, {status: 401})
+    if (session.user.role !== "Admin" && session.user.role !== "Owner") {
+        return NextResponse.json({ message: "Unauthorized - Admin access required" }, { status: 401 })
     }
 
     try {
@@ -58,10 +58,10 @@ export async function PATCH(request, context){
             console.error("Invalid ObjectId format:", id)
             return NextResponse.json({ message: "Invalid product ID format" }, { status: 400 })
         }
-        const updatedProduct = await Product.findByIdAndUpdate(id, body, {new: true})
-        return NextResponse.json(updatedProduct, {message: "Product updated successfully"}, {status: 200})
+        const updatedProduct = await Product.findByIdAndUpdate(id, body, { new: true })
+        return NextResponse.json(updatedProduct, { message: "Product updated successfully" }, { status: 200 })
     } catch (error) {
-        console.log(error)
-        return NextResponse.json({message: "Internal Server Error", error: error.message}, {status: 500})
+        console.error('Product PATCH error:', error)
+        return NextResponse.json({ message: "Internal Server Error", error: error.message }, { status: 500 })
     }
 }

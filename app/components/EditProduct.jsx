@@ -12,7 +12,6 @@ const EditProduct = ({ setEditProductOpen, setToast, product, fetchProducts }) =
         setLoading(true)
         axios.patch(`/api/products/${product._id}`, formData, { withCredentials: true })
             .then(res => {
-                console.log(res.data)
                 setresponse(res.data.message)
                 setToast && setToast({
                     message: res.data?.message || 'Product updated successfully',
@@ -22,7 +21,6 @@ const EditProduct = ({ setEditProductOpen, setToast, product, fetchProducts }) =
                 setEditProductOpen(false)
             })
             .catch(err => {
-                console.log(err)
                 setresponse(err.response.data.message)
                 setToast && setToast({
                     message: err.response?.data?.message || 'Failed to update product',

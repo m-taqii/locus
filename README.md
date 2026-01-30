@@ -8,7 +8,7 @@
 ![TailwindCSS](https://img.shields.io/badge/TailwindCSS-4.0-38B2AC?logo=tailwind-css)
 ![NextAuth](https://img.shields.io/badge/NextAuth-4.24.13-blue)
 ![License](https://img.shields.io/badge/License-MIT-green)
-![Version](https://img.shields.io/badge/Version-0.5.0-orange)
+![Version](https://img.shields.io/badge/Version-0.6.0-orange)
 
 **Master Your Inventory** — Precision. Control. Growth.
 
@@ -20,22 +20,26 @@ The operating system for modern commerce.
 
 ---
 
-## 🆕 What's New in v0.5.0
+## 🆕 What's New in v0.6.0
 
-🎉 **Dashboard Analytics Now Live!** Real-time business insights at your fingertips.
+🎉 **Settings Now Fully Functional!** Complete account management with real API integration.
 
-✅ **Dashboard Statistics** - View active users, total sales, and product counts  
-✅ **Low Stock Alerts** - Visual alerts for products below threshold  
-✅ **Best Selling Staff Leaderboard** - Track top performers with rankings  
-✅ **Dashboard API** - New `/api/dashboard` endpoint with aggregated data  
-✅ **Owner Role** - New role with full business access  
-✅ **Role-Based Dashboard** - Owners/Admins see team stats, Staff sees personal stats  
+✅ **Settings API** - New `/api/settings/account` endpoint for profile, business, and password  
+✅ **Profile Updates** - Change name and email with real database updates  
+✅ **Business Settings** - Owners can update business info, address, website  
+✅ **Password Change** - Secure password updates with current password validation  
+✅ **Business Model Extended** - Added industry, address, city, country, website fields  
+✅ **Data Loading** - Settings page now fetches actual data from database  
 
-**Phase 3 in progress!** Dashboard analytics and low stock alerts are now operational.
+**Settings are now production-ready!** No more simulated saves.
+
+### Previous Updates (v0.5.0)
+
+✅ Dashboard Analytics, Low Stock Alerts, Best Selling Staff Leaderboard, Owner Role, Role-Based Dashboard
 
 ### Previous Updates (v0.4.0)
 
-✅ Settings Page (Profile, Business, Security tabs), Form Validations, Tabbed Interface
+✅ Settings Page UI (Profile, Business, Security tabs), Form Validations, Tabbed Interface
 
 ### Previous Updates (v0.3.0)
 
@@ -72,7 +76,7 @@ The operating system for modern commerce.
 
 **Locus** is a modern, full-stack inventory management SaaS application built with Next.js 16 (App Router), React 19, and MongoDB. It provides businesses with a comprehensive platform to manage their inventory, track products, manage users, and maintain detailed logs of inventory operations.
 
-**v0.5.0** brings real-time dashboard analytics with statistics, low stock alerts, and staff performance tracking. Locus now includes all essential features for inventory operations plus business intelligence.
+**v0.6.0** brings fully functional account settings with real API integration. Users can now update their profiles, business details, and passwords with secure database operations. Combined with dashboard analytics, low stock alerts, and staff leaderboards, Locus is a complete inventory management solution.
 
 The application features a **dark-themed UI** with stunning **GSAP animations**, **glassmorphism effects**, and a premium amber/orange gradient color scheme that creates an engaging user experience.
 
@@ -276,6 +280,9 @@ locus/
 │   │   │       └── route.js       # PATCH/DELETE - Update/Delete product
 │   │   ├── dashboard/             # Dashboard analytics
 │   │   │   └── route.js           # GET - Fetch dashboard statistics
+│   │   ├── settings/              # Settings management
+│   │   │   └── account/           # Account settings
+│   │   │       └── route.js       # GET/PATCH - Fetch/Update settings
 │   │   └── stock-adjustments/     # Stock management
 │   │       └── route.js           # GET/POST - Fetch/Create stock adjustments
 │   │
@@ -453,18 +460,23 @@ NEXTAUTH_URL=https://yourdomain.com
 ### 1. Business Model
 **File:** `models/business.model.js`
 
-Stores business/admin account information.
+Stores business/owner account information.
 
 ```javascript
 {
-  ownerName: String (required),      // Owner's full name
-  businessName: String (required),   // Business/company name
-  email: String (required, unique),  // Login email
-  password: String (required),       // Bcrypt hashed password
-  role: String (default: "Admin"),   // User role
-  status: String (default: "Active"), // Account status
-  createdAt: Date,                   // Auto-generated
-  updatedAt: Date                    // Auto-generated
+  ownerName: String (required),        // Owner's full name
+  businessName: String (required),     // Business/company name
+  industry: String (default: ""),      // Business industry
+  address: String (default: ""),       // Street address
+  city: String (default: ""),          // City
+  country: String (default: ""),       // Country
+  website: String (default: ""),       // Business website URL
+  email: String (required, unique),    // Login email
+  password: String (required, select: false), // Bcrypt hashed password
+  role: String (default: "Owner"),     // User role (Owner)
+  status: String (default: "Active"),  // Account status
+  createdAt: Date,                     // Auto-generated
+  updatedAt: Date                      // Auto-generated
 }
 ```
 
@@ -623,6 +635,145 @@ Fetch dashboard statistics and analytics data.
   - Low stock products
 - Uses MongoDB aggregation for efficient queries
 - Business isolation via businessId
+
+---
+
+### Settings Routes
+
+#### `GET /api/settings/account`
+**File:** `app/api/settings/account/route.js`
+
+Fetch current user's profile and business data for settings page.
+
+**Headers:** Requires authenticated session
+
+**Response (Success - Owner):**
+```json
+{
+  "profile": {
+    "name": "John Doe",
+    "email": "john@acme.com",
+    "role": "Owner"
+  },
+  "business": {
+    "businessName": "Acme Corp",
+    "industry": "retail",
+    "address": "123 Main St",
+    "city": "New York",
+    "country": "USA",
+    "website": "https://acme.com"
+  }
+}
+```
+
+**Response (Success - Admin/Staff):**
+```json
+{
+  "profile": {
+    "name": "Jane Smith",
+    "email": "jane@acme.com",
+    "role": "Staff"
+  },
+  "business": {}
+}
+```
+
+---
+
+#### `PATCH /api/settings/account?account=profile`
+**File:** `app/api/settings/account/route.js`
+
+Update user's profile information.
+
+**Headers:** Requires authenticated session
+
+**Request Body:**
+```json
+{
+  "name": "John Doe Updated",
+  "email": "john.new@acme.com"
+}
+```
+
+**Response (Success):**
+```json
+{
+  "message": "Profile updated successfully"
+}
+```
+
+---
+
+#### `PATCH /api/settings/account?account=business`
+**File:** `app/api/settings/account/route.js`
+
+Update business information (Owner only).
+
+**Headers:** Requires authenticated session (Owner role)
+
+**Request Body:**
+```json
+{
+  "businessName": "Acme Corporation",
+  "industry": "retail",
+  "address": "456 Commerce Ave",
+  "city": "Los Angeles",
+  "country": "USA",
+  "website": "https://acme.io"
+}
+```
+
+**Response (Success):**
+```json
+{
+  "message": "Business updated successfully"
+}
+```
+
+---
+
+#### `PATCH /api/settings/account?account=password`
+**File:** `app/api/settings/account/route.js`
+
+Change user's password with validation.
+
+**Headers:** Requires authenticated session
+
+**Request Body:**
+```json
+{
+  "currentPassword": "oldPassword123",
+  "newPassword": "newSecurePassword456",
+  "confirmPassword": "newSecurePassword456"
+}
+```
+
+**Response (Success):**
+```json
+{
+  "message": "Password changed successfully"
+}
+```
+
+**Response (Error - Wrong Password):**
+```json
+{
+  "message": "Current password is incorrect"
+}
+```
+
+**Response (Error - Mismatch):**
+```json
+{
+  "message": "Passwords do not match"
+}
+```
+
+**Features:**
+- Current password verification required
+- Password hashing with bcrypt
+- Works for both Owner and User accounts
+- Validates password confirmation
 
 ---
 
@@ -1665,7 +1816,7 @@ npm run start
 
 ## 🐛 Known Issues & Limitations
 
-### Current State (v0.5.0)
+### Current State (v0.6.0)
 
 **✅ Fully Implemented:**
 - ✅ Business registration and authentication
@@ -1683,7 +1834,10 @@ npm run start
 - ✅ Edit functionality for products and users
 - ✅ Form validations
 - ✅ Admin-only UI controls (Add/Delete buttons)
-- ✅ Settings page (Profile, Business, Security tabs)
+- ✅ Settings page with full API integration
+- ✅ Profile updates (name, email)
+- ✅ Business settings (Owner only)
+- ✅ Password change functionality
 - ✅ Dashboard analytics (statistics, low stock alerts)
 - ✅ Best selling staff leaderboard
 - ✅ Owner role with full business access
@@ -1701,10 +1855,9 @@ npm run start
 
 **Known Issues:**
 - Product image field requires a value but doesn't support actual file uploads yet
+- Avatar upload UI exists but functionality not yet implemented
 - Toast notifications use fixed 3-second duration
 - Mobile menu could benefit from scroll lock on body
-- Some console.log statements remain in production code
-- No email uniqueness validation in edit user form (could cause conflicts)
 
 ---
 
@@ -1734,11 +1887,14 @@ npm run start
 - ✅ Low stock alerts/notifications
 - ✅ Best selling staff leaderboard
 - ✅ Owner role implementation
+- ✅ Settings API (profile, business, password)
+- ✅ Business model extension (address, industry, website)
 - [ ] Advanced filtering (category, status, date range)
 - [ ] Bulk operations (multi-select)
 - [ ] Image upload for products
+- [ ] Avatar upload for users
 - [ ] Pagination for large datasets (tables)
-- [ ] Password reset functionality
+- [ ] Password reset functionality (forgot password)
 - [ ] Email notifications
 - [ ] Export data (CSV, PDF)
 - [ ] Print-friendly views
