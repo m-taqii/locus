@@ -266,7 +266,7 @@ locus/
 ├── app/                           # Next.js App Directory
 │   ├── api/                       # API Routes
 │   │   ├── auth/                  # Authentication endpoints
-│   │   │   ├── [...nextauth]/    # NextAuth configuration
+│   │   │   ├── [...nextauth]/     # NextAuth configuration
 │   │   │   │   └── route.js       # Auth handler (credentials provider)
 │   │   │   ├── registerBusiness/  # Business registration
 │   │   │   │   └── route.js       # POST - Register new business
@@ -303,9 +303,15 @@ locus/
 │   │   ├── users/                 # User management page (Admin only)
 │   │   │   └── page.js            # Users table with full CRUD
 │   │   ├── settings/              # Settings page
-│   │   │   └── page.js            # User/business settings (basic)
+│   │   │   └── page.js            # Profile, Business, Security settings
 │   │   ├── layout.js              # Dashboard layout with sidebar
-│   │   └── page.js                # Dashboard home/overview
+│   │   └── page.js                # Dashboard home with analytics
+│   │
+│   ├── about/                     # About page
+│   │   └── page.js                # About Locus information
+│   │
+│   ├── privacy/                   # Privacy Policy page
+│   │   └── page.js                # Privacy policy content
 │   │
 │   ├── lib/                       # Utility functions
 │   │   └── db.js                  # MongoDB connection utility
@@ -316,13 +322,13 @@ locus/
 │   ├── register/                  # Registration page
 │   │   └── page.js                # Business registration form
 │   │
+│   ├── favicon.ico                # Site favicon
 │   ├── globals.css                # Global styles and Tailwind imports
 │   ├── layout.js                  # Root layout with SessionProvider
 │   └── page.js                    # Landing page with GSAP animations
 │
 ├── models/                        # Mongoose schemas
-│   ├── business.model.js          # Business/Admin schema
-│   ├── logs.model.js              # Old activity log schema (deprecated)
+│   ├── business.model.js          # Business/Owner schema
 │   ├── product.model.js           # Product schema
 │   ├── stockLogs.model.js         # Stock adjustment logs schema
 │   └── user.model.js              # User/Staff schema
@@ -330,10 +336,15 @@ locus/
 ├── public/                        # Static assets
 │   ├── logo.png                   # Locus logo
 │   ├── dashboard.png              # Dashboard preview image
-│   └── analytics.png              # Analytics visualization
+│   ├── analytics.png              # Analytics visualization
+│   ├── mobile.png                 # Mobile preview image
+│   ├── file.svg                   # File icon
+│   ├── globe.svg                  # Globe icon
+│   └── window.svg                 # Window icon
 │
 ├── .env                           # Environment variables (gitignored)
 ├── .gitignore                     # Git ignore rules
+├── LICENSE                        # MIT License
 ├── eslint.config.mjs              # ESLint configuration
 ├── jsconfig.json                  # JavaScript configuration
 ├── next.config.mjs                # Next.js configuration

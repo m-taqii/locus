@@ -14,7 +14,10 @@ import {
   Zap,
   TrendingUp,
   Globe,
-  MonitorPlay
+  MonitorPlay,
+  Settings,
+  Award,
+  AlertTriangle
 } from "lucide-react";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -100,7 +103,7 @@ export default function Home() {
     {
       icon: <PackageCheck className="w-8 h-8 text-[#F0A728]" />,
       title: "Smart Inventory",
-      desc: "Track products with categories, SKUs, and low-stock alerts. Validated and real-time."
+      desc: "Track products with categories, SKUs, and real-time quantity updates. Fully validated inputs."
     },
     {
       icon: <ArrowRightLeft className="w-8 h-8 text-[#a34b27]" />,
@@ -108,24 +111,25 @@ export default function Home() {
       desc: "Seamless Stock-in/Stock-out operations with complete activity logging and audit trails."
     },
     {
-      icon: <Users className="w-8 h-8 text-[#F0A728]" />,
-      title: "Role-Based Access",
-      desc: "Granular permissions for Admins and Staff. Secure, multi-tenant architecture."
+      icon: <BarChart3 className="w-8 h-8 text-[#F0A728]" />,
+      title: "Dashboard Analytics",
+      desc: "Real-time statistics, product counts, active users, and total sales at a glance."
     },
     {
-      icon: <BarChart3 className="w-8 h-8 text-[#a34b27]" />,
-      title: "Real-time Analytics",
-      desc: "Live dashboard updates, profit margin analysis, and predictive forecasting."
+      icon: <AlertTriangle className="w-8 h-8 text-[#a34b27]" />,
+      title: "Low Stock Alerts",
+      desc: "Automatic notifications when products fall below minimum threshold. Never run out."
+    },
+
+    {
+      icon: <Users className="w-8 h-8 text-[#a34b27]" />,
+      title: "User Management",
+      desc: "Add, edit, and manage team members with role-based access. Owner, Admin, and Staff roles."
     },
     {
-      icon: <ShieldCheck className="w-8 h-8 text-[#F0A728]" />,
-      title: "Enterprise Security",
-      desc: "Bank-grade encryption, secure session management, and automated data protection."
-    },
-    {
-      icon: <Zap className="w-8 h-8 text-[#a34b27]" />,
+      icon: <Zap className="w-8 h-8 text-[#F0A728]" />,
       title: "Lightning Fast",
-      desc: "Optimized performance architecture ensuring sub-second interactions and zero latency."
+      desc: "Optimized architecture ensuring sub-second interactions and zero latency."
     }
   ];
 
@@ -147,7 +151,7 @@ export default function Home() {
         <div className="max-w-5xl mx-auto space-y-8">
           <div className="hero-content inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm mb-4">
             <span className="w-2 h-2 rounded-full bg-[#F0A728] animate-pulse"></span>
-            <span className="text-sm font-medium text-white/80 tracking-wide">v0.4.0 Phase 2 Complete</span>
+            <span className="text-sm font-medium text-white/80 tracking-wide">v0.6.0 Live Now</span>
           </div>
 
           <h1 className="hero-content text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight leading-[1.1]">
