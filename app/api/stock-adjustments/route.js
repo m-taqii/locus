@@ -4,6 +4,7 @@ import stockLogs from "@/models/stockLogs.model";
 import connectDb from "@/app/lib/db";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import mongoose from "mongoose";
 
 // POST - Create new stock adjustment
 export async function POST(request) {
@@ -34,6 +35,13 @@ export async function POST(request) {
             );
         }
 
+        if (!mongoose.Types.ObjectId.isValid(productId)) {
+            return NextResponse.json(
+                { message: "Invalid product ID" },
+                { status: 400 }
+            );
+        }
+
         if (quantity <= 0) {
             return NextResponse.json(
                 { message: "Quantity must be greater than 0" },
@@ -45,6 +53,10 @@ export async function POST(request) {
 
         if (!product) {
             return NextResponse.json({ message: "Product not found" }, { status: 404 });
+        }
+
+        if (product.owner.toString() !== businessId.toString()) {
+            return NextResponse.json({ message: "Forbidden: You are not authorized to perform this action" }, { status: 403 });
         }
 
         let newQuantity;

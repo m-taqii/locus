@@ -83,16 +83,23 @@ export async function PATCH(req) {
                 user = await User.findById(userId).select('+password');
             }
 
+            if (!newPassword || newPassword.length < 6) {
+                return NextResponse.json({ message: "Password must be at least 6 characters" }, { status: 400 });
+            }
+
             if (!user) {
                 return NextResponse.json({ message: "User not found" }, { status: 404 })
             }
+
             const isPasswordValid = await bcrypt.compare(currentPassword, user.password)
             if (!isPasswordValid) {
                 return NextResponse.json({ message: "Current password is incorrect" }, { status: 401 })
             }
+
             if (newPassword !== confirmPassword) {
                 return NextResponse.json({ message: "Passwords do not match" }, { status: 400 })
             }
+
             user.password = await bcrypt.hash(newPassword, 10)
             await user.save()
             return NextResponse.json({ message: "Password changed successfully" }, { status: 200 })
@@ -100,6 +107,12 @@ export async function PATCH(req) {
 
         if (account === "profile") {
             const { name, email } = body
+
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+            if (!emailRegex.test(email)) {
+                return NextResponse.json({ message: "Invalid email format" }, { status: 400 });
+            }
 
             let user;
             if (isOwner) {
@@ -111,9 +124,11 @@ export async function PATCH(req) {
                 user.email = email
             } else {
                 user = await User.findById(userId)
+
                 if (!user) {
                     return NextResponse.json({ message: "User not found" }, { status: 404 })
                 }
+
                 user.name = name
                 user.email = email
             }

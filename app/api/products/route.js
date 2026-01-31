@@ -11,14 +11,10 @@ export async function GET() {
         if (!session) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
-        const user = session.user;
+        const isOwner = session.user.role === "Owner"
+        const userId = isOwner ? session.user.id : session.user.businessId;
 
-        const products = await Product.find({
-            $or: [
-                { owner: user.id },
-                { owner: user.businessId }
-            ]
-        });
+        const products = await Product.find({ owner: userId });
         return NextResponse.json({ products, message: "Products fetched successfully" });
     } catch (error) {
         console.error("Get products error:", error);
