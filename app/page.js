@@ -319,7 +319,7 @@ export default function Home() {
 
       {/* Footer */}
       <footer className="border-t border-white/10 py-12 text-center text-white/30 text-sm">
-        <p>&copy; {new Date().getFullYear()} Locus Inventory Management System. All rights reserved.</p>
+        <p className=" p-2">&copy; {new Date().getFullYear()} Locus Inventory Management System. All rights reserved.</p>
       </footer>
     </main>
   );
