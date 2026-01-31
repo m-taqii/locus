@@ -46,15 +46,17 @@ const layout = ({ children }) => {
 
                     <ul className='flex flex-col gap-2 px-3 mt-5 text-white w-full overflow-y-auto flex-1'>
 
-                        <Link href="/dashboard" className=''><li className='flex items-center gap-2 hover:bg-[#1a1a1e] p-2 hover:rounded-md cursor-pointer hover:border-r-2 hover:border-[#F0A728] border-b border-gray-700'><LayoutDashboard /> {open || isMobile ? "Dashboard" : ""}</li></Link>
+                        {mobileMenu && <Link href="/" className='m-2'><Image src="/logo.png" alt="Logo" width={100} height={100} /></Link>}
 
-                        <Link href="/dashboard/inventory" className=''><li className='flex items-center gap-2 hover:bg-[#1a1a1e] p-2 hover:rounded-md cursor-pointer hover:border-r-2 hover:border-[#F0A728] border-b border-gray-700'><Package /> {open || isMobile ? "Inventory" : ""}</li></Link>
+                        <Link href="/dashboard" onClick={() => setMobileMenu(false)}><li className='flex items-center gap-2 hover:bg-[#1a1a1e] p-2 hover:rounded-md cursor-pointer hover:border-r-2 hover:border-[#F0A728] border-b border-gray-700'><LayoutDashboard /> {open || isMobile ? "Dashboard" : ""}</li></Link>
 
-                        {isAdmin && <Link href="/dashboard/users" className=''><li className='flex items-center gap-2 hover:bg-[#1a1a1e] p-2 hover:rounded-md cursor-pointer hover:border-r-2 hover:border-[#F0A728] border-b border-gray-700'><Users /> {open || isMobile ? "Users" : ""}</li></Link>}
+                        <Link href="/dashboard/inventory" onClick={() => setMobileMenu(false)}><li className='flex items-center gap-2 hover:bg-[#1a1a1e] p-2 hover:rounded-md cursor-pointer hover:border-r-2 hover:border-[#F0A728] border-b border-gray-700'><Package /> {open || isMobile ? "Inventory" : ""}</li></Link>
 
-                        <Link href="/dashboard/manage-stocks" className=''><li className='flex items-center gap-2 hover:bg-[#1a1a1e] p-2 hover:rounded-md cursor-pointer hover:border-r-2 hover:border-[#F0A728] border-b border-gray-700'><MonitorCog /> {open || isMobile ? "Manage Stocks" : ""}</li></Link>
+                        {isAdmin && <Link href="/dashboard/users" onClick={() => setMobileMenu(false)}><li className='flex items-center gap-2 hover:bg-[#1a1a1e] p-2 hover:rounded-md cursor-pointer hover:border-r-2 hover:border-[#F0A728] border-b border-gray-700'><Users /> {open || isMobile ? "Users" : ""}</li></Link>}
 
-                        <Link href="/dashboard/settings" className=''><li className='flex items-center gap-2 hover:bg-[#1a1a1e] p-2 hover:rounded-md cursor-pointer hover:border-r-2 hover:border-[#F0A728] border-b border-gray-700'><Settings /> {open || isMobile ? "Settings" : ""}</li></Link>
+                        <Link href="/dashboard/manage-stocks" onClick={() => setMobileMenu(false)}><li className='flex items-center gap-2 hover:bg-[#1a1a1e] p-2 hover:rounded-md cursor-pointer hover:border-r-2 hover:border-[#F0A728] border-b border-gray-700'><MonitorCog /> {open || isMobile ? "Manage Stocks" : ""}</li></Link>
+
+                        <Link href="/dashboard/settings" onClick={() => setMobileMenu(false)}><li className='flex items-center gap-2 hover:bg-[#1a1a1e] p-2 hover:rounded-md cursor-pointer hover:border-r-2 hover:border-[#F0A728] border-b border-gray-700'><Settings /> {open || isMobile ? "Settings" : ""}</li></Link>
                     </ul>
 
                     <div className='w-full px-3 pb-3 mt-auto'>

@@ -116,7 +116,7 @@ const page = () => {
 
             <div className='grid md:grid-cols-2 grid-cols-1 gap-6'>
                 {/* Stock Adjustment Form */}
-                <div className='bg-[#121214] rounded-2xl p-6 max-h-[600px]'>
+                <div className='bg-[#121214] rounded-2xl p-6 min-h-[600px]'>
                     <h2 className='text-lg font-semibold text-white mb-4 flex items-center gap-2'>
                         <Package className='w-5 h-5 text-[#F0A728]' />
                         Stock Adjustment
