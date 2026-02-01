@@ -8,7 +8,7 @@
 ![TailwindCSS](https://img.shields.io/badge/TailwindCSS-4.0-38B2AC?logo=tailwind-css)
 ![NextAuth](https://img.shields.io/badge/NextAuth-4.24.13-blue)
 ![License](https://img.shields.io/badge/License-MIT-green)
-![Version](https://img.shields.io/badge/Version-0.6.0-orange)
+![Version](https://img.shields.io/badge/Version-0.7.0-orange)
 
 **Master Your Inventory** — Precision. Control. Growth.
 
@@ -20,18 +20,22 @@ The operating system for modern commerce.
 
 ---
 
-## 🆕 What's New in v0.6.0
+## 🆕 What's New in v0.7.0
 
-🎉 **Settings Now Fully Functional!** Complete account management with real API integration.
+🎉 **Pagination & Mobile Navigation!** Better UX for large datasets and mobile users.
 
-✅ **Settings API** - New `/api/settings/account` endpoint for profile, business, and password  
-✅ **Profile Updates** - Change name and email with real database updates  
-✅ **Business Settings** - Owners can update business info, address, website  
-✅ **Password Change** - Secure password updates with current password validation  
-✅ **Business Model Extended** - Added industry, address, city, country, website fields  
-✅ **Data Loading** - Settings page now fetches actual data from database  
+✅ **Backend Pagination** - Products and Users APIs now support `?page=X&limit=Y`  
+✅ **Pagination Component** - Reusable component with "Showing X to Y of Z" display  
+✅ **Smart Page Numbers** - Ellipsis for large page counts, always shows first/last  
+✅ **Mobile Navigation** - Hamburger menu with slide-out panel  
+✅ **Navbar Links** - About and Privacy pages accessible from navigation  
+✅ **Improved UX** - No more loading all data at once  
 
-**Settings are now production-ready!** No more simulated saves.
+**Tables now handle large datasets efficiently!**
+
+### Previous Updates (v0.6.0)
+
+✅ Settings API, Profile/Business/Password updates, Business model extended
 
 ### Previous Updates (v0.5.0)
 
@@ -43,7 +47,7 @@ The operating system for modern commerce.
 
 ### Previous Updates (v0.3.0)
 
-✅ Stock Management System, Activity Logging, Stock History, Search Functionality, Real-time Stock Validation
+✅ Stock Management System, Activity Logging, Stock History, Search Functionality
 
 ### Previous Updates (v0.2.0)
 
@@ -65,7 +69,6 @@ The operating system for modern commerce.
 - [Components](#-components)
 - [Authentication Flow](#-authentication-flow)
 - [Design System](#-design-system)
-- [Screenshots](#-screenshots)
 - [Roadmap](#-roadmap)
 - [Contributing](#-contributing)
 - [License](#-license)
@@ -76,7 +79,7 @@ The operating system for modern commerce.
 
 **Locus** is a modern, full-stack inventory management SaaS application built with Next.js 16 (App Router), React 19, and MongoDB. It provides businesses with a comprehensive platform to manage their inventory, track products, manage users, and maintain detailed logs of inventory operations.
 
-**v0.6.0** brings fully functional account settings with real API integration. Users can now update their profiles, business details, and passwords with secure database operations. Combined with dashboard analytics, low stock alerts, and staff leaderboards, Locus is a complete inventory management solution.
+**v0.7.0** introduces backend pagination for products and users, enabling efficient handling of large datasets. Combined with a responsive mobile navigation, complete settings management, dashboard analytics, and role-based access control, Locus is a production-ready inventory management solution.
 
 The application features a **dark-themed UI** with stunning **GSAP animations**, **glassmorphism effects**, and a premium amber/orange gradient color scheme that creates an engaging user experience.
 
@@ -87,12 +90,13 @@ The application features a **dark-themed UI** with stunning **GSAP animations**,
 - 👥 **Role-Based Access Control** - Owner, Admin, and Staff roles with UI-level permissions
 - 📦 **Complete Inventory Management** - Track products with categories, SKUs, and thresholds
 - 📊 **Dashboard Analytics** - Real-time statistics, sales tracking, and performance metrics
+- 📄 **Pagination** - Backend pagination for products and users with customizable page sizes
 - 🚨 **Low Stock Alerts** - Visual alerts for products below minimum threshold
 - 🏆 **Staff Leaderboard** - Track top performing staff by sales
 - 📝 **Activity Logging** - Complete audit trail of all inventory movements
 - 🔍 **Search & Filter** - Find products quickly by name or SKU
 - ⚙️ **Settings Management** - Complete profile, business, and security settings
-- 📱 **Real-time Updates** - Dynamic data fetching and instant UI refresh
+- 📱 **Mobile Navigation** - Responsive hamburger menu with slide-out panel
 - 🎨 **Modern UI/UX** - Scroll-triggered animations, parallax effects, and glassmorphism
 
 
@@ -291,17 +295,18 @@ locus/
 │   │   ├── AddUser.jsx            # User creation modal form
 │   │   ├── EditProduct.jsx        # Product edit modal form
 │   │   ├── EditUser.jsx           # User edit modal form
+│   │   ├── Pagination.jsx         # Reusable pagination component
 │   │   ├── Toast.jsx              # Toast notification component
-│   │   ├── Navbar.jsx             # Landing page navigation
+│   │   ├── Navbar.jsx             # Navigation with mobile menu
 │   │   └── SessionWrapper.jsx     # NextAuth session provider
 │   │
 │   ├── dashboard/                 # Protected dashboard area
 │   │   ├── inventory/             # Inventory management page
-│   │   │   └── page.js            # Products table with full CRUD
+│   │   │   └── page.js            # Products table with pagination
 │   │   ├── manage-stocks/         # Stock adjustment page
 │   │   │   └── page.js            # Stock-in/stock-out with history
 │   │   ├── users/                 # User management page (Admin only)
-│   │   │   └── page.js            # Users table with full CRUD
+│   │   │   └── page.js            # Users table with pagination
 │   │   ├── settings/              # Settings page
 │   │   │   └── page.js            # Profile, Business, Security settings
 │   │   ├── layout.js              # Dashboard layout with sidebar
@@ -862,9 +867,17 @@ Create a new user (staff member) under the logged-in business.
 #### `GET /api/auth/users`
 **File:** `app/api/auth/users/route.js`
 
-Fetch all users belonging to the logged-in business.
+Fetch users belonging to the logged-in business with pagination.
 
 **Headers:** Requires authenticated session
+
+**Query Parameters:**
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `page` | number | 1 | Current page number |
+| `limit` | number | 10 | Items per page |
+
+**Example:** `/api/auth/users?page=2&limit=10`
 
 **Response (Success):**
 ```json
@@ -880,7 +893,13 @@ Fetch all users belonging to the logged-in business.
       "createdAt": "2026-01-24T10:00:00.000Z",
       "updatedAt": "2026-01-24T10:00:00.000Z"
     }
-  ]
+  ],
+  "pagination": {
+    "currentPage": 2,
+    "totalPages": 5,
+    "totalItems": 47,
+    "itemsPerPage": 10
+  }
 }
 ```
 
@@ -919,9 +938,17 @@ NextAuth.js authentication handler (credentials provider).
 #### `GET /api/products`
 **File:** `app/api/products/route.js`
 
-Fetch all products for the logged-in user's business.
+Fetch products for the logged-in user's business with pagination.
 
 **Headers:** Requires authenticated session
+
+**Query Parameters:**
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `page` | number | 1 | Current page number |
+| `limit` | number | 10 | Items per page |
+
+**Example:** `/api/products?page=1&limit=10`
 
 **Response (Success):**
 ```json
@@ -942,13 +969,20 @@ Fetch all products for the logged-in user's business.
       "updatedAt": "2026-01-25T10:00:00.000Z"
     }
   ],
+  "pagination": {
+    "currentPage": 1,
+    "totalPages": 15,
+    "totalItems": 150,
+    "itemsPerPage": 10
+  },
   "message": "Products fetched successfully"
 }
 ```
 
-**Query Logic:**
-- Finds products where owner is either the user ID or business ID
-- Supports both admin and staff access
+**Features:**
+- Backend pagination for efficient data loading
+- Sorted by newest first (createdAt: -1)
+- Business isolation via owner field
 
 ---
 
@@ -1827,7 +1861,7 @@ npm run start
 
 ## 🐛 Known Issues & Limitations
 
-### Current State (v0.6.0)
+### Current State (v0.7.0)
 
 **✅ Fully Implemented:**
 - ✅ Business registration and authentication
@@ -1852,13 +1886,16 @@ npm run start
 - ✅ Dashboard analytics (statistics, low stock alerts)
 - ✅ Best selling staff leaderboard
 - ✅ Owner role with full business access
+- ✅ Backend pagination for Products and Users
+- ✅ Reusable Pagination component
+- ✅ Mobile navigation (hamburger menu)
+- ✅ About and Privacy pages
 
 **❌ Not Yet Implemented:**
 - ❌ Advanced filtering (by category, status, etc.)
 - ❌ Image upload for products (currently uses placeholder)
-- ❌ Password reset/recovery
+- ❌ Password reset/recovery (forgot password)
 - ❌ Email verification
-- ❌ Pagination for tables
 - ❌ Export functionality (CSV/PDF)
 - ❌ Bulk operations (multi-select delete/update)
 - ❌ Product categories management (hardcoded list)
@@ -1868,7 +1905,7 @@ npm run start
 - Product image field requires a value but doesn't support actual file uploads yet
 - Avatar upload UI exists but functionality not yet implemented
 - Toast notifications use fixed 3-second duration
-- Mobile menu could benefit from scroll lock on body
+- Some console.log statements remain in production code
 
 ---
 
@@ -1900,11 +1937,14 @@ npm run start
 - ✅ Owner role implementation
 - ✅ Settings API (profile, business, password)
 - ✅ Business model extension (address, industry, website)
+- ✅ Backend pagination (Products, Users)
+- ✅ Pagination component (reusable)
+- ✅ Mobile navigation (hamburger menu)
+- ✅ About and Privacy pages
 - [ ] Advanced filtering (category, status, date range)
 - [ ] Bulk operations (multi-select)
 - [ ] Image upload for products
 - [ ] Avatar upload for users
-- [ ] Pagination for large datasets (tables)
 - [ ] Password reset functionality (forgot password)
 - [ ] Email notifications
 - [ ] Export data (CSV, PDF)

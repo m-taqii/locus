@@ -4,21 +4,53 @@ import connectDb from "@/app/lib/db";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route"
 
-export async function GET() {
+export async function GET(request) {
     try {
         await connectDb();
         const session = await getServerSession(authOptions);
+
         if (!session) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
+
+        // Get business ID based on user role
         const isOwner = session.user.role === "Owner"
         const userId = isOwner ? session.user.id : session.user.businessId;
 
-        const products = await Product.find({ owner: userId });
-        return NextResponse.json({ products, message: "Products fetched successfully" });
+        // Get pagination params from URL (e.g., /api/products?page=1&limit=10)
+        const { searchParams } = new URL(request.url);
+        const page = parseInt(searchParams.get('page')) || 1;      // Default: page 1
+        const limit = parseInt(searchParams.get('limit')) || 10;   // Default: 10 items per page
+
+        // Calculate how many items to skip
+        // Page 1: skip 0, Page 2: skip 10, Page 3: skip 20, etc.
+        const skip = (page - 1) * limit;
+
+        // Get total count of products (for calculating total pages)
+        const totalItems = await Product.countDocuments({ owner: userId });
+
+        // Get paginated products from database
+        const products = await Product.find({ owner: userId })
+            .skip(skip)
+            .limit(limit)
+            .sort({ createdAt: -1 }); // Newest first
+
+        // Calculate total pages
+        const totalPages = Math.ceil(totalItems / limit);
+
+        return NextResponse.json({
+            products,
+            pagination: {
+                currentPage: page,
+                totalPages,
+                totalItems,
+                itemsPerPage: limit
+            },
+            message: "Products fetched successfully"
+        });
     } catch (error) {
         console.error("Get products error:", error);
-        return NextResponse.json({ error: "Failed to fetch products" }, { status: 500, message: "Failed to fetch products" });
+        return NextResponse.json({ error: "Failed to fetch products" }, { status: 500 });
     }
 }
 

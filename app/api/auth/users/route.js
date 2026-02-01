@@ -77,15 +77,45 @@ export async function GET(req) {
 
     const businessId = session.user.id; // The logged-in admin's ID is the business ID
 
-    const users = await User.find({
+    // Build the query to find users belonging to this business
+    const query = {
       $or: [{
         business: businessId
       }, {
         business: session.user.businessId
       }]
-    });
+    };
 
-    return NextResponse.json({ users });
+    // Get pagination params from URL (e.g., /api/auth/users?page=1&limit=10)
+    const { searchParams } = new URL(req.url);
+    const page = parseInt(searchParams.get('page')) || 1;      // Default: page 1
+    const limit = parseInt(searchParams.get('limit')) || 10;   // Default: 10 items per page
+
+    // Calculate how many items to skip
+    // Page 1: skip 0, Page 2: skip 10, Page 3: skip 20, etc.
+    const skip = (page - 1) * limit;
+
+    // Get total count of users (for calculating total pages)
+    const totalItems = await User.countDocuments(query);
+
+    // Get paginated users from database
+    const users = await User.find(query)
+      .skip(skip)
+      .limit(limit)
+      .sort({ createdAt: -1 }); // Newest first
+
+    // Calculate total pages
+    const totalPages = Math.ceil(totalItems / limit);
+
+    return NextResponse.json({
+      users,
+      pagination: {
+        currentPage: page,
+        totalPages,
+        totalItems,
+        itemsPerPage: limit
+      }
+    });
   } catch (error) {
     console.error("Get users error:", error);
     return NextResponse.json({ error: error.message || "Internal server error" }, { status: 500 });

@@ -3,6 +3,7 @@ import { Pencil, Trash2 } from 'lucide-react'
 import React, { useState, useEffect } from 'react'
 import AddUser from '@/app/components/AddUser'
 import Toast from '@/app/components/Toast'
+import Pagination from '@/app/components/Pagination'
 import axios from 'axios'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
@@ -19,18 +20,29 @@ const page = () => {
   const [editUser, setEditUser] = useState(null)
   const router = useRouter()
 
+  // Pagination state - now uses backend pagination
+  const [currentPage, setCurrentPage] = useState(1)
+  const [totalPages, setTotalPages] = useState(1)
+  const [totalItems, setTotalItems] = useState(0)
+  const itemsPerPage = 10
+
   useEffect(() => {
     if (session?.user?.role !== "Admin" && session?.user?.role !== "Owner") {
       router.push("/dashboard")
     }
-    fetchUsers()
-  }, [])
+  }, [session])
 
-  const fetchUsers = () => {
+  // Fetch users with pagination params
+  const fetchUsers = (page = currentPage) => {
     setLoading(true)
-    axios.get("/api/auth/users", { withCredentials: true })
+    axios.get(`/api/auth/users?page=${page}&limit=${itemsPerPage}`, { withCredentials: true })
       .then((res) => {
         setUsers(res.data.users || [])
+        // Update pagination info from backend response
+        if (res.data.pagination) {
+          setTotalPages(res.data.pagination.totalPages)
+          setTotalItems(res.data.pagination.totalItems)
+        }
       })
       .catch((err) => {
         setToast({
@@ -42,6 +54,11 @@ const page = () => {
         setLoading(false)
       })
   }
+
+  // Fetch users when page changes
+  useEffect(() => {
+    fetchUsers(currentPage)
+  }, [currentPage])
 
   const handleDeleteUser = (userId) => {
 
@@ -75,6 +92,10 @@ const page = () => {
   const handleEditUser = (user) => {
     setEditUser(user)
     setEditUserOpen(true)
+  }
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page)
   }
 
   return (
@@ -145,6 +166,17 @@ const page = () => {
             )}
           </tbody>
         </table>
+
+        {/* Desktop Pagination */}
+        {!loading && totalItems > 0 && (
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+            totalItems={totalItems}
+            itemsPerPage={itemsPerPage}
+          />
+        )}
       </div>
 
       {/* Mobile Card View */}
@@ -182,6 +214,17 @@ const page = () => {
               </div>
             </div>
           ))
+        )}
+
+        {/* Mobile Pagination */}
+        {!loading && totalItems > 0 && (
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+            totalItems={totalItems}
+            itemsPerPage={itemsPerPage}
+          />
         )}
       </div>
 

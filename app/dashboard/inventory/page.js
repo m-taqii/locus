@@ -5,6 +5,7 @@ import { Pencil, Trash2 } from 'lucide-react'
 import Toast from '@/app/components/Toast'
 import AddProducts from '@/app/components/AddProducts'
 import EditProduct from '@/app/components/EditProduct'
+import Pagination from '@/app/components/Pagination'
 import { useSession } from 'next-auth/react'
 
 const page = () => {
@@ -17,13 +18,25 @@ const page = () => {
   const [editProductOpen, setEditProductOpen] = useState(false)
   const [product, setProduct] = useState(null)
 
+  // Pagination state - now uses backend pagination
+  const [currentPage, setCurrentPage] = useState(1)
+  const [totalPages, setTotalPages] = useState(1)
+  const [totalItems, setTotalItems] = useState(0)
+  const itemsPerPage = 10
+
   const { data: session } = useSession()
 
-  const fetchProducts = () => {
+  // Fetch products with pagination params
+  const fetchProducts = (page = currentPage) => {
     setLoading(true)
-    axios.get("/api/products", { withCredentials: true })
+    axios.get(`/api/products?page=${page}&limit=${itemsPerPage}`, { withCredentials: true })
       .then((res) => {
         setProducts(res.data.products || [])
+        // Update pagination info from backend response
+        if (res.data.pagination) {
+          setTotalPages(res.data.pagination.totalPages)
+          setTotalItems(res.data.pagination.totalItems)
+        }
       })
       .catch((err) => {
         setToast({
@@ -36,9 +49,10 @@ const page = () => {
       })
   }
 
+  // Fetch products when page changes
   useEffect(() => {
-    fetchProducts()
-  }, [])
+    fetchProducts(currentPage)
+  }, [currentPage])
 
   const handleDeleteProduct = (id) => {
     axios.delete(`/api/products/${id}`, { withCredentials: true })
@@ -72,6 +86,11 @@ const page = () => {
     setEditProductOpen(true)
   }
 
+  // Reset to first page when products change
+  const handlePageChange = (page) => {
+    setCurrentPage(page)
+  }
+
   const isAdmin = session?.user?.role === "Admin" || session?.user?.role === "Owner"
 
   return (
@@ -91,11 +110,7 @@ const page = () => {
             >
               Add Product
             </button>
-            <button
-              className='bg-linear-to-r from-[#a34b27] to-[#F0A728] text-white text-xs md:text-sm px-3 py-2 md:px-5 md:py-2.5 rounded-lg md:rounded-xl font-semibold hover:cursor-pointer hover:shadow-[0_8px_25px_rgba(255,153,51,0.45)] hover:brightness-110 transition-all duration-300 ease-in-out'
-            >
-              Add Category
-            </button>
+
           </div>
         )}
       </div>
@@ -147,6 +162,17 @@ const page = () => {
             )}
           </tbody>
         </table>
+
+        {/* Desktop Pagination */}
+        {!loading && totalItems > 0 && (
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+            totalItems={totalItems}
+            itemsPerPage={itemsPerPage}
+          />
+        )}
       </div>
 
       {/* Mobile Card View */}
@@ -192,6 +218,17 @@ const page = () => {
             </div>
           ))
         )}
+
+        {/* Mobile Pagination */}
+        {!loading && totalItems > 0 && (
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+            totalItems={totalItems}
+            itemsPerPage={itemsPerPage}
+          />
+        )}
       </div>
 
       {/* Delete Confirmation Modal */}
@@ -226,7 +263,7 @@ const page = () => {
         />
       )}
 
-      {addProductOpen && <AddProducts setAddProductOpen={handleCloseAddProduct} setToast={setToast} />}
+      {addProductOpen && <AddProducts setAddProductOpen={handleCloseAddProduct} setToast={setToast} fetchProducts={fetchProducts}/>}
 
       {editProductOpen && <EditProduct setEditProductOpen={setEditProductOpen} product={product} fetchProducts={fetchProducts} setToast={setToast} />}
     </section>

@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useSession } from 'next-auth/react'
 import axios from 'axios'
 
-const AddProducts = ({ setAddProductOpen, setToast }) => {
+const AddProducts = ({ setAddProductOpen, setToast, fetchProducts }) => {
     const [formData, setformData] = useState({
         name: "",
         price: 0,
@@ -26,12 +26,18 @@ const AddProducts = ({ setAddProductOpen, setToast }) => {
                     message: res.data?.message || 'Product created successfully',
                     type: 'success'
                 })
-                setAddProductOpen(true) 
+
+                if (fetchProducts) {
+                    fetchProducts()
+                }
+                setAddProductOpen(false)
             })
             .catch(err => {
-                setresponse(err.response.data.message)
+
+                const errorMessage = err.response?.data?.message || 'Failed to create product'
+                setresponse(errorMessage)
                 setToast && setToast({
-                    message: err.response?.data?.message || 'Failed to create product',
+                    message: errorMessage,
                     type: 'error'
                 })
             })

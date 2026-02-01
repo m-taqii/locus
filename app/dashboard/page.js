@@ -4,7 +4,7 @@ import AddProducts from '../components/AddProducts'
 import { useSession } from 'next-auth/react'
 import axios from 'axios'
 import { Handbag, Package2, UsersRound, Trophy, Medal, Award } from 'lucide-react'
-
+import Toast from '../components/Toast'
 const page = () => {
   const [addProductOpen, setAddProductOpen] = useState(false)
   const { data: session } = useSession()
@@ -12,6 +12,7 @@ const page = () => {
   const [topSellingStaff, setTopSellingStaff] = useState([])
   const [products, setProducts] = useState([])
   const [loading, setLoading] = useState(true)
+  const [toast, setToast] = useState(null)
 
   const fetchData = () => {
     setLoading(true)
@@ -49,16 +50,12 @@ const page = () => {
             >
               Add Product
             </button>
-            <button
-              className='bg-linear-to-r from-[#a34b27] to-[#F0A728] text-white text-xs md:text-sm px-3 py-2 md:px-5 md:py-2.5 rounded-lg md:rounded-xl font-semibold hover:cursor-pointer hover:shadow-[0_8px_25px_rgba(255,153,51,0.45)] hover:brightness-110 transition-all duration-300 ease-in-out'
-            >
-              Add Category
-            </button>
+
           </div>
         )}
       </div>
-
-      {addProductOpen && <AddProducts setAddProductOpen={setAddProductOpen} />}
+      {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
+      {addProductOpen && <AddProducts setAddProductOpen={setAddProductOpen} setToast={setToast} />}
 
       {/* Stats Cards Grid */}
       <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8'>
