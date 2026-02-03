@@ -25,14 +25,18 @@ export async function DELETE(request, context) {
             return NextResponse.json({ message: "Invalid product ID format" }, { status: 400 })
         }
 
-        const product = await User.findByIdAndDelete(id)
-
-        if (!product) {
+        const user = await User.findById(id)
+        if(user.role === "Admin" && session.user.role === "Admin"){
+            return NextResponse.json({ message: "You can't delete admin" }, { status: 400 })
+        }
+        
+        if (!user) {
             return NextResponse.json({ message: "User not found" }, { status: 404 })
         }
+        await User.deleteOne({_id: id})
         return NextResponse.json({ message: "User deleted successfully" }, { status: 200 })
     } catch (error) {
-
+        
         console.error("Delete user error:", error)
         return NextResponse.json({ message: "Internal Server Error", error: error.message }, { status: 500 })
     }
@@ -60,6 +64,9 @@ export async function PATCH(request, context) {
 
         const body = await request.json()
         const existUser = await User.findOne({ email: body.email })
+        if(session.user.role === "Admin" && existUser.role === "Admin"){
+            return NextResponse.json({ message: "You can't update admin" }, { status: 400 })
+        }
 
         if (existUser && existUser._id.toString() !== id) {
             return NextResponse.json({ message: "User already exists with this email" }, { status: 400 })

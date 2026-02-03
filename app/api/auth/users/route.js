@@ -76,6 +76,7 @@ export async function GET(req) {
     }
 
     const businessId = session.user.id; // The logged-in admin's ID is the business ID
+    const userRole = session.user.role;
 
     // Build the query to find users belonging to this business
     const query = {
@@ -85,6 +86,11 @@ export async function GET(req) {
         business: session.user.businessId
       }]
     };
+
+    // If the requesting user is an Admin, exclude other Admins from results
+    if (userRole === "Admin") {
+      query.role = { $ne: "Admin" };
+    }
 
     // Get pagination params from URL (e.g., /api/auth/users?page=1&limit=10)
     const { searchParams } = new URL(req.url);

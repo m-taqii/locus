@@ -112,11 +112,12 @@ The application features a **dark-themed UI** with stunning **GSAP animations**,
 - **Password Encryption** using bcrypt (10 rounds of hashing)
 - **Protected API Routes** with server-side session validation
 - **Role-Based Access Control:**
-  - **Owner Role:** Full business access, sees all team statistics
-  - **Admin Role:** Manage users and products, full CRUD access
+  - **Owner Role:** Full business access, sees all users including Admins
+  - **Admin Role:** Manage users and products, can only see Staff (not other Admins)
   - **Staff Role:** View products, perform stock operations, see personal stats
   - **API Level:** Owner/Admin-only routes for create/delete operations
   - **UI Level:** Conditional rendering based on user role
+- **Admin User Visibility:** Admins are hidden from other Admins (Owner-only visibility)
 - **Session Callbacks** for custom user data in sessions
 
 ### 📦 Inventory Management
@@ -354,6 +355,8 @@ locus/
 ├── jsconfig.json                  # JavaScript configuration
 ├── next.config.mjs                # Next.js configuration
 ├── package.json                   # Dependencies and scripts
+├── pnpm-lock.yaml                 # pnpm lock file
+├── pnpm-workspace.yaml            # pnpm workspace config
 ├── postcss.config.mjs             # PostCSS configuration
 └── README.md                      # This file
 ```
@@ -380,11 +383,11 @@ Before you begin, ensure you have the following installed:
 
 2. **Install dependencies**
    ```bash
+   pnpm install
+   # or
    npm install
    # or
    yarn install
-   # or
-   pnpm install
    # or
    bun install
    ```
@@ -424,11 +427,11 @@ Before you begin, ensure you have the following installed:
 
 5. **Run the development server**
    ```bash
+   pnpm dev
+   # or
    npm run dev
    # or
    yarn dev
-   # or
-   pnpm dev
    # or
    bun dev
    ```
@@ -902,6 +905,10 @@ Fetch users belonging to the logged-in business with pagination.
   }
 }
 ```
+
+**Permissions:**
+- **Owner:** Can see all users (Staff + Admin)
+- **Admin:** Can only see Staff users (other Admins are hidden)
 
 ---
 
@@ -1835,14 +1842,17 @@ className="p-6 rounded-2xl
 
 | Command | Description |
 |---------|-------------|
-| `npm run dev` | Start development server on port 3000 |
-| `npm run build` | Build production bundle |
-| `npm run start` | Start production server |
-| `npm run lint` | Run ESLint for code quality |
+| `pnpm dev` | Start development server on port 3000 |
+| `pnpm build` | Build production bundle |
+| `pnpm start` | Start production server |
+| `pnpm lint` | Run ESLint for code quality |
+
+> **Note:** You can also use `npm run`, `yarn`, or `bun` instead of `pnpm`.
 
 **Development:**
 ```bash
-npm run dev
+pnpm dev
+# or: npm run dev / bun dev
 ```
 - Runs on `http://localhost:3000`
 - Hot Module Replacement (HMR) enabled
@@ -1850,8 +1860,9 @@ npm run dev
 
 **Production:**
 ```bash
-npm run build
-npm run start
+pnpm build
+pnpm start
+# or: npm run build && npm run start
 ```
 - Optimized bundle
 - Server-side rendering
