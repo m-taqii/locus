@@ -7,8 +7,9 @@
 ![MongoDB](https://img.shields.io/badge/MongoDB-Mongoose-green?logo=mongodb)
 ![TailwindCSS](https://img.shields.io/badge/TailwindCSS-4.0-38B2AC?logo=tailwind-css)
 ![NextAuth](https://img.shields.io/badge/NextAuth-4.24.13-blue)
+![Resend](https://img.shields.io/badge/Resend-Email-purple)
 ![License](https://img.shields.io/badge/License-MIT-green)
-![Version](https://img.shields.io/badge/Version-0.7.0-orange)
+![Version](https://img.shields.io/badge/Version-0.8.0-orange)
 
 **Master Your Inventory** — Precision. Control. Growth.
 
@@ -20,18 +21,23 @@ The operating system for modern commerce.
 
 ---
 
-## 🆕 What's New in v0.7.0
+## 🆕 What's New in v0.8.0
 
-🎉 **Pagination & Mobile Navigation!** Better UX for large datasets and mobile users.
+🎉 **Email Verification System!** Secure your business accounts with OTP verification.
 
-✅ **Backend Pagination** - Products and Users APIs now support `?page=X&limit=Y`  
-✅ **Pagination Component** - Reusable component with "Showing X to Y of Z" display  
-✅ **Smart Page Numbers** - Ellipsis for large page counts, always shows first/last  
-✅ **Mobile Navigation** - Hamburger menu with slide-out panel  
-✅ **Navbar Links** - About and Privacy pages accessible from navigation  
-✅ **Improved UX** - No more loading all data at once  
+✅ **OTP Email Verification** - 6-digit code sent during registration  
+✅ **Professional Email Templates** - Branded HTML emails with Locus theme  
+✅ **Resend Integration** - Reliable email delivery service  
+✅ **Resend OTP** - Request new code with 60-second rate limiting  
+✅ **10-Minute Expiry** - Secure time-limited verification codes  
+✅ **Email Verified Flag** - Track verification status in database  
+✅ **Verification Page** - Clean UI for entering OTP codes  
 
-**Tables now handle large datasets efficiently!**
+**Business accounts are now verified before accessing the dashboard!**
+
+### Previous Updates (v0.7.0)
+
+✅ Backend Pagination, Pagination Component, Mobile Navigation, Admin Visibility Restriction
 
 ### Previous Updates (v0.6.0)
 
@@ -43,7 +49,7 @@ The operating system for modern commerce.
 
 ### Previous Updates (v0.4.0)
 
-✅ Settings Page UI (Profile, Business, Security tabs), Form Validations, Tabbed Interface
+✅ Settings Page UI, Form Validations, Tabbed Interface
 
 ### Previous Updates (v0.3.0)
 
@@ -79,7 +85,7 @@ The operating system for modern commerce.
 
 **Locus** is a modern, full-stack inventory management SaaS application built with Next.js 16 (App Router), React 19, and MongoDB. It provides businesses with a comprehensive platform to manage their inventory, track products, manage users, and maintain detailed logs of inventory operations.
 
-**v0.7.0** introduces backend pagination for products and users, enabling efficient handling of large datasets. Combined with a responsive mobile navigation, complete settings management, dashboard analytics, and role-based access control, Locus is a production-ready inventory management solution.
+**v0.8.0** introduces email verification with OTP during business registration. Combined with backend pagination, mobile navigation, complete settings management, dashboard analytics, and role-based access control, Locus is a production-ready inventory management solution with enterprise-grade security.
 
 The application features a **dark-themed UI** with stunning **GSAP animations**, **glassmorphism effects**, and a premium amber/orange gradient color scheme that creates an engaging user experience.
 
@@ -87,6 +93,7 @@ The application features a **dark-themed UI** with stunning **GSAP animations**,
 
 - 🏢 **Multi-tenant Architecture** - Each business has its own isolated data
 - 🔐 **Secure Authentication** - NextAuth.js with JWT session management
+- ✉️ **Email Verification** - OTP-based verification with Resend email service
 - 👥 **Role-Based Access Control** - Owner, Admin, and Staff roles with UI-level permissions
 - 📦 **Complete Inventory Management** - Track products with categories, SKUs, and thresholds
 - 📊 **Dashboard Analytics** - Real-time statistics, sales tracking, and performance metrics
@@ -256,6 +263,7 @@ The application features a **dark-themed UI** with stunning **GSAP animations**,
 - **NextAuth.js 4.24.13** - Authentication solution
 - **MongoDB** (via Mongoose 9.1.4) - NoSQL database
 - **bcrypt 6.0.0** - Password hashing
+- **Resend** - Email service provider
 
 ### Development Tools
 - **ESLint 9** - Code linting
@@ -274,7 +282,11 @@ locus/
 │   │   │   ├── [...nextauth]/     # NextAuth configuration
 │   │   │   │   └── route.js       # Auth handler (credentials provider)
 │   │   │   ├── registerBusiness/  # Business registration
-│   │   │   │   └── route.js       # POST - Register new business
+│   │   │   │   ├── route.js       # POST - Register new business + send OTP
+│   │   │   │   ├── verify/        # Email verification
+│   │   │   │   │   └── route.js   # POST - Verify OTP code
+│   │   │   │   └── resend-otp/    # Resend verification
+│   │   │   │       └── route.js   # POST - Resend OTP (rate limited)
 │   │   │   └── users/             # User management
 │   │   │       ├── route.js       # GET/POST - Fetch/Create users
 │   │   │       └── [id]/          # Dynamic user routes
@@ -320,13 +332,18 @@ locus/
 │   │   └── page.js                # Privacy policy content
 │   │
 │   ├── lib/                       # Utility functions
-│   │   └── db.js                  # MongoDB connection utility
+│   │   ├── db.js                  # MongoDB connection utility
+│   │   └── services/              # External services
+│   │       ├── email.js           # Resend email sending utility
+│   │       └── emailTemplates.js  # Branded HTML email templates
 │   │
 │   ├── login/                     # Login page
 │   │   └── page.js                # Login form with NextAuth signIn
 │   │
-│   ├── register/                  # Registration page
-│   │   └── page.js                # Business registration form
+│   ├── register/                  # Registration pages
+│   │   ├── page.js                # Business registration form
+│   │   └── verify/                # Email verification page
+│   │       └── page.js            # OTP input form
 │   │
 │   ├── favicon.ico                # Site favicon
 │   ├── globals.css                # Global styles and Tailwind imports
@@ -455,6 +472,8 @@ Before you begin, ensure you have the following installed:
 | `MONGODB_URI` | MongoDB connection string | `mongodb://localhost:27017/locus` | ✅ Yes |
 | `NEXTAUTH_SECRET` | Secret key for JWT encryption | `random-32-char-string` | ✅ Yes |
 | `NEXTAUTH_URL` | Base URL of the application | `http://localhost:3000` | ✅ Yes |
+| `RESEND_API_KEY` | Resend API key for emails | `re_xxxxxxxxxxxxx` | ✅ Yes |
+| `EMAIL_FROM` | Sender email address | `Locus <noreply@yourdomain.com>` | ✅ Yes |
 
 ### Development vs Production
 
@@ -463,6 +482,8 @@ Before you begin, ensure you have the following installed:
 MONGODB_URI=mongodb://localhost:27017/locus
 NEXTAUTH_SECRET=dev-secret-key-not-for-production
 NEXTAUTH_URL=http://localhost:3000
+RESEND_API_KEY=re_your_api_key
+EMAIL_FROM=Locus <onboarding@resend.dev>
 ```
 
 **Production (.env.production):**
@@ -470,6 +491,8 @@ NEXTAUTH_URL=http://localhost:3000
 MONGODB_URI=mongodb+srv://user:pass@cluster.mongodb.net/locus?retryWrites=true&w=majority
 NEXTAUTH_SECRET=strong-production-secret-key-32chars+
 NEXTAUTH_URL=https://yourdomain.com
+RESEND_API_KEY=re_production_api_key
+EMAIL_FROM=Locus <noreply@yourdomain.com>
 ```
 
 ---
@@ -479,7 +502,7 @@ NEXTAUTH_URL=https://yourdomain.com
 ### 1. Business Model
 **File:** `models/business.model.js`
 
-Stores business/owner account information.
+Stores business/owner account information with email verification.
 
 ```javascript
 {
@@ -494,10 +517,20 @@ Stores business/owner account information.
   password: String (required, select: false), // Bcrypt hashed password
   role: String (default: "Owner"),     // User role (Owner)
   status: String (default: "Active"),  // Account status
+  emailVerified: Boolean (default: false), // Email verification status
+  otpCode: String,                     // 6-digit verification code
+  otpExpiry: Date,                     // OTP expiration timestamp
+  lastOtpSentAt: Date,                 // Rate limiting for OTP resend
   createdAt: Date,                     // Auto-generated
   updatedAt: Date                      // Auto-generated
 }
 ```
+
+**Features:**
+- Email verification with OTP
+- 10-minute OTP expiry
+- 60-second rate limiting for resend
+- Password excluded from queries by default
 
 **Relationships:**
 - One-to-Many with Users (business owner → staff members)
@@ -801,7 +834,7 @@ Change user's password with validation.
 #### `POST /api/auth/registerBusiness`
 **File:** `app/api/auth/registerBusiness/route.js`
 
-Register a new business account.
+Register a new business account and send OTP verification email.
 
 **Request Body:**
 ```json
@@ -822,11 +855,96 @@ Register a new business account.
 }
 ```
 
+**Process:**
+1. Validates all input fields
+2. Checks email uniqueness
+3. Hashes password with bcrypt
+4. Generates 6-digit OTP code
+5. Sends verification email via Resend
+6. Creates business with `emailVerified: false`
+
 **Validations:**
 - Email format validation (regex)
 - Password minimum 6 characters
 - All fields required
 - Email uniqueness check
+
+---
+
+#### `POST /api/auth/registerBusiness/verify`
+**File:** `app/api/auth/registerBusiness/verify/route.js`
+
+Verify email using OTP code.
+
+**Request Body:**
+```json
+{
+  "otp": "123456"
+}
+```
+
+**Response (Success):**
+```json
+{
+  "message": "Email verified successfully",
+  "ok": true
+}
+```
+
+**Response (Error - Invalid OTP):**
+```json
+{
+  "error": "Invalid OTP"
+}
+```
+
+**Response (Error - Expired OTP):**
+```json
+{
+  "error": "OTP has expired"
+}
+```
+
+**Process:**
+1. Finds business by OTP code
+2. Checks OTP expiry (10 minutes)
+3. Sets `emailVerified: true`
+4. Clears OTP code and expiry
+
+---
+
+#### `POST /api/auth/registerBusiness/resend-otp`
+**File:** `app/api/auth/registerBusiness/resend-otp/route.js`
+
+Resend OTP verification email with rate limiting.
+
+**Request Body:**
+```json
+{
+  "id": "507f1f77bcf86cd799439011"
+}
+```
+
+**Response (Success):**
+```json
+{
+  "message": "OTP resent successfully",
+  "ok": true
+}
+```
+
+**Response (Error - Rate Limited):**
+```json
+{
+  "error": "Please wait before resending OTP"
+}
+```
+
+**Features:**
+- 60-second rate limiting between requests
+- Generates new 6-digit OTP
+- Updates expiry to 10 minutes from now
+- Sends branded email via Resend
 
 ---
 
@@ -1872,10 +1990,14 @@ pnpm start
 
 ## 🐛 Known Issues & Limitations
 
-### Current State (v0.7.0)
+### Current State (v0.8.0)
 
 **✅ Fully Implemented:**
 - ✅ Business registration and authentication
+- ✅ Email verification with OTP (6-digit code)
+- ✅ OTP resend with rate limiting (60 seconds)
+- ✅ Professional branded email templates
+- ✅ Resend email service integration
 - ✅ User management (Create, Read, Update, Delete)
 - ✅ Product management (Create, Read, Update, Delete)
 - ✅ Stock management & adjustments (Stock-In/Stock-Out)
@@ -1897,6 +2019,7 @@ pnpm start
 - ✅ Dashboard analytics (statistics, low stock alerts)
 - ✅ Best selling staff leaderboard
 - ✅ Owner role with full business access
+- ✅ Admin visibility restriction (Admins can't see other Admins)
 - ✅ Backend pagination for Products and Users
 - ✅ Reusable Pagination component
 - ✅ Mobile navigation (hamburger menu)
@@ -1906,7 +2029,6 @@ pnpm start
 - ❌ Advanced filtering (by category, status, etc.)
 - ❌ Image upload for products (currently uses placeholder)
 - ❌ Password reset/recovery (forgot password)
-- ❌ Email verification
 - ❌ Export functionality (CSV/PDF)
 - ❌ Bulk operations (multi-select delete/update)
 - ❌ Product categories management (hardcoded list)
@@ -1952,12 +2074,15 @@ pnpm start
 - ✅ Pagination component (reusable)
 - ✅ Mobile navigation (hamburger menu)
 - ✅ About and Privacy pages
+- ✅ Email verification (OTP system)
+- ✅ Resend email service integration
+- ✅ Branded email templates
+- ✅ Admin visibility restriction
 - [ ] Advanced filtering (category, status, date range)
 - [ ] Bulk operations (multi-select)
 - [ ] Image upload for products
 - [ ] Avatar upload for users
 - [ ] Password reset functionality (forgot password)
-- [ ] Email notifications
 - [ ] Export data (CSV, PDF)
 - [ ] Print-friendly views
 

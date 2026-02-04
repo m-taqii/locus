@@ -35,7 +35,7 @@ const Register = () => {
             if (signInResult?.error) {
                 setError("Registration successful but login failed. Please login manually.");
                 setLoading(false);
-                router.push("/login");
+                router.push("/register/verify");
             } else {
                 // Successfully logged in, redirect to dashboard
                 router.push("/dashboard");

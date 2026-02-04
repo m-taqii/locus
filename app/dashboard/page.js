@@ -52,7 +52,6 @@ const page = () => {
             >
               Add Product
             </button>
-
           </div>
         )}
       </div>

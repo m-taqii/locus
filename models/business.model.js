@@ -47,6 +47,16 @@ const businessSchema = new mongoose.Schema({
         type: String,
         default: "Active"
     },
+    emailVerified: {
+        type: Boolean,
+        default: false
+    },
+    otpCode: String,
+    otpExpiry: Date,
+    lastOtpSentAt: {
+        type: Date,
+        default: Date.now()
+    }
 
 }, {
     timestamps: true

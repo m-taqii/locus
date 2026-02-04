@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import bcrypt from "bcrypt";
 import connectDB from "@/app/lib/db";
 import Business from "@/models/business.model";
+import { sendEmail } from "@/app/lib/services/email";
+import { getOTPEmailTemplate } from "@/app/lib/emailTemplates";
 
 export async function POST(req) {
   try {
@@ -31,11 +33,22 @@ export async function POST(req) {
 
     const hashed = await bcrypt.hash(password, 10);
 
+    const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
+    const otpExpiry = new Date(Date.now() + 10 * 60 * 1000);
+
+    await sendEmail({
+      to: email,
+      subject: "Verify Your Email - Locus",
+      html: getOTPEmailTemplate(ownerName, otpCode),
+    });
+
     const newBusiness = await Business.create({
       ownerName,
       businessName,
       email,
       password: hashed,
+      otpCode,
+      otpExpiry,
     });
 
     return NextResponse.json({ message: "Business created", ok: true, businessId: newBusiness._id });

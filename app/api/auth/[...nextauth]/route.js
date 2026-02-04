@@ -33,6 +33,7 @@ export const authOptions = {
             email: admin.email,
             role: admin.role,
             businessId: admin._id.toString(),
+            emailVerified: admin.emailVerified || false,
           };
 
         }
@@ -41,12 +42,13 @@ export const authOptions = {
         if (!isValid) throw new Error("Invalid password");
 
         return {
-          id: user._id.toString(), 
+          id: user._id.toString(),
           name: user.name,
           email: user.email,
           role: user.role,
           businessName: user.businessName,
-          businessId: user.business
+          businessId: user.business,
+          emailVerified: true, // Staff/Admin users are already verified by default
         };
       },
     }),
@@ -54,6 +56,7 @@ export const authOptions = {
 
   callbacks: {
     async jwt({ token, user }) {
+      // On initial login, store user data in the token
       if (user) {
         token.id = user.id;                    // MongoDB _id for both user and business
         token.role = user.role;
@@ -61,7 +64,23 @@ export const authOptions = {
         token.businessName = user.businessName;
         token.name = user.name;                // User's name
         token.ownerName = user.ownerName;      // Business owner's name
+        token.emailVerified = user.emailVerified; // Email verification status
       }
+
+      // For business owners, always check the database for the latest emailVerified status
+      // This ensures that after verification, the token gets updated
+      if (token.role === "Owner" && token.id) {
+        try {
+          await connectDB();
+          const business = await Business.findById(token.id).select('emailVerified');
+          if (business) {
+            token.emailVerified = business.emailVerified;
+          }
+        } catch (error) {
+          console.error("Error checking email verification:", error);
+        }
+      }
+
       return token;
     },
 
@@ -72,6 +91,7 @@ export const authOptions = {
       session.user.businessName = token.businessName;
       session.user.name = token.name; // User's name
       session.user.ownerName = token.ownerName; // Business owner's name
+      session.user.emailVerified = token.emailVerified; // Email verification status
       return session;
     },
   },
