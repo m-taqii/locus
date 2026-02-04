@@ -125,7 +125,7 @@ const page = () => {
               <th className='p-3 text-left text-sm font-semibold text-gray-400 border-b border-gray-700'>Quantity</th>
               <th className='p-3 text-left text-sm font-semibold text-gray-400 border-b border-gray-700'>Category</th>
               <th className='p-3 text-left text-sm font-semibold text-gray-400 border-b border-gray-700'>Status</th>
-              <th className='p-3 text-center text-sm font-semibold text-gray-400 border-b border-gray-700'>Actions</th>
+              {isAdmin && <th className='p-3 text-center text-sm font-semibold text-gray-400 border-b border-gray-700'>Actions</th>}
             </tr>
           </thead>
           <tbody>
@@ -151,12 +151,14 @@ const page = () => {
                       {product.status}
                     </span>
                   </td>
-                  <td className='p-3 border-b border-gray-700/50'>
-                    <div className='flex gap-3 items-center justify-center'>
-                      <button onClick={() => handleEditProduct(product)} className='cursor-pointer hover:text-green-500 transition-colors'><Pencil className='w-5 h-5' /></button>
-                      {isAdmin && <button onClick={() => setDeleteId(product._id)} className='cursor-pointer hover:text-red-500 transition-colors'><Trash2 className='w-5 h-5' /></button>}
-                    </div>
-                  </td>
+                  {isAdmin && (
+                    <td className='p-3 border-b border-gray-700/50'>
+                      <div className='flex gap-3 items-center justify-center'>
+                        <button onClick={() => handleEditProduct(product)} className='cursor-pointer hover:text-green-500 transition-colors'><Pencil className='w-5 h-5' /></button>
+                        <button onClick={() => setDeleteId(product._id)} className='cursor-pointer hover:text-red-500 transition-colors'><Trash2 className='w-5 h-5' /></button>
+                      </div>
+                    </td>
+                  )}
                 </tr>
               ))
             )}
@@ -205,16 +207,17 @@ const page = () => {
                   <span className='text-white ml-2'>{product.quantity}</span>
                 </div>
               </div>
-              <div className='flex gap-3 pt-3 border-t border-gray-700/50'>
-                <button onClick={() => handleEditProduct(product)} className='flex items-center gap-1 text-sm text-gray-400 hover:text-green-500 transition-colors'>
-                  <Pencil className='w-4 h-4' /> Edit
-                </button>
-                {isAdmin && (
+              {isAdmin && (
+                <div className='flex gap-3 pt-3 border-t border-gray-700/50'>
+                  <button onClick={() => handleEditProduct(product)} className='flex items-center gap-1 text-sm text-gray-400 hover:text-green-500 transition-colors'>
+                    <Pencil className='w-4 h-4' /> Edit
+                  </button>
+
                   <button onClick={() => setDeleteId(product._id)} className='flex items-center gap-1 text-sm text-gray-400 hover:text-red-500 transition-colors'>
                     <Trash2 className='w-4 h-4' /> Delete
                   </button>
-                )}
-              </div>
+                </div>
+              )}
             </div>
           ))
         )}
@@ -263,7 +266,7 @@ const page = () => {
         />
       )}
 
-      {addProductOpen && <AddProducts setAddProductOpen={handleCloseAddProduct} setToast={setToast} fetchProducts={fetchProducts}/>}
+      {addProductOpen && <AddProducts setAddProductOpen={handleCloseAddProduct} setToast={setToast} fetchProducts={fetchProducts} />}
 
       {editProductOpen && <EditProduct setEditProductOpen={setEditProductOpen} product={product} fetchProducts={fetchProducts} setToast={setToast} />}
     </section>
