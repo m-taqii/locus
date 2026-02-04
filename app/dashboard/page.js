@@ -3,13 +3,14 @@ import { useState, useEffect } from 'react'
 import AddProducts from '../components/AddProducts'
 import { useSession } from 'next-auth/react'
 import axios from 'axios'
-import { Handbag, Package2, UsersRound, Trophy, Medal, Award } from 'lucide-react'
+import { Handbag, Package2, UsersRound, Trophy, Medal, Award, TrendingUp } from 'lucide-react'
 import Toast from '../components/Toast'
 const page = () => {
   const [addProductOpen, setAddProductOpen] = useState(false)
   const { data: session } = useSession()
   const [dashboardData, setDashboardData] = useState(null)
   const [topSellingStaff, setTopSellingStaff] = useState([])
+  const [topSellingProducts, setTopSellingProducts] = useState([])
   const [products, setProducts] = useState([])
   const [loading, setLoading] = useState(true)
   const [toast, setToast] = useState(null)
@@ -19,8 +20,9 @@ const page = () => {
     axios.get("/api/dashboard", { withCredentials: true })
       .then((res) => {
         setDashboardData(res.data)
-        setProducts(res.data.lowStockProducts)
-        setTopSellingStaff(res.data.topSellingStaff)
+        setProducts(res.data.lowStockProducts || [])
+        setTopSellingStaff(res.data.topSellingStaff || [])
+        setTopSellingProducts(res.data.topSellingProducts || [])
       })
       .catch(() => {
       })
@@ -123,6 +125,43 @@ const page = () => {
                   <div className='text-right'>
                     <p className='text-red-400 font-bold text-sm md:text-base'>{product.quantity} left</p>
                     <p className='text-gray-500 text-xs'>Min: {product.minThreshold}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Top Selling Products Section - Visible to all roles */}
+      <div className='mb-6'>
+        <h2 className='text-lg md:text-xl font-bold text-white mb-4'>Top Selling Products</h2>
+
+        <div className='bg-[#242529] rounded-xl border border-white/5 p-4 md:p-6'>
+          {loading ? (
+            <div className='flex items-center justify-center py-8'>
+              <div className='w-8 h-8 border-2 border-[#F0A728] border-t-transparent rounded-full animate-spin'></div>
+            </div>
+          ) : topSellingProducts.length === 0 ? (
+            <p className='text-gray-500 text-center py-8'>No sales data available!</p>
+          ) : (
+            <div className='space-y-3'>
+              {topSellingProducts.map((product, index) => (
+                <div key={product._id || product.name} className='flex items-center justify-between p-3 bg-[#1a1a1e] rounded-lg'>
+                  <div className='flex items-center gap-3'>
+                    <div className='w-10 h-10 rounded-lg bg-green-900/30 flex items-center justify-center relative'>
+                      <TrendingUp size={20} className='text-green-400' />
+                      <span className='absolute -top-1 -right-1 w-5 h-5 rounded-full bg-[#242529] border border-white/10 flex items-center justify-center text-xs font-bold text-green-400'>
+                        {index + 1}
+                      </span>
+                    </div>
+                    <div>
+                      <p className='text-white font-medium text-sm md:text-base'>{product.name}</p>
+                      <p className='text-gray-500 text-xs'>{product.category} • ${product.price}</p>
+                    </div>
+                  </div>
+                  <div className='text-right'>
+                    <p className='text-green-400 font-bold text-sm md:text-base'>{product.totalSold} sold</p>
                   </div>
                 </div>
               ))}
