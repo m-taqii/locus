@@ -1,15 +1,17 @@
 "use client"
 import React, { useState, useEffect } from 'react'
 import { User, Building2, Bell, Lock, Palette, Save, Camera } from 'lucide-react'
-import { useSession } from 'next-auth/react'
+import { signOut, useSession } from 'next-auth/react'
 import Toast from '@/app/components/Toast'
 import axios from 'axios'
+import { Trash } from 'lucide-react'
 
 const page = () => {
   const { data: session, status } = useSession()
   const [activeTab, setActiveTab] = useState('profile')
   const [loading, setLoading] = useState(false)
   const [response, setResponse] = useState(null)
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
 
   // Profile state
   const [profile, setProfile] = useState({
@@ -38,6 +40,9 @@ const page = () => {
 
   const [toast, setToast] = useState(null)
   const [dataLoading, setDataLoading] = useState(true)
+  const [deletePassword, setDeletePassword] = useState('')
+  const [deleteReason, setDeleteReason] = useState('')
+  const [deleteFeedback, setDeleteFeedback] = useState('')
 
   // Fetch current data on mount
   useEffect(() => {
@@ -161,6 +166,40 @@ const page = () => {
         setResponse(err.response.data.message)
         setToast && setToast({
           message: err.response?.data?.message || 'Failed to update password',
+          type: 'error'
+        })
+      })
+      .finally(() => {
+        setLoading(false)
+      })
+  }
+
+  const handleDeleteAccount = () => {
+    if (!deleteReason) {
+      setToast({ message: 'Please select a reason for deletion', type: 'error' })
+      return
+    }
+    if (!deletePassword) {
+      setToast({ message: 'Please enter your password', type: 'error' })
+      return
+    }
+
+    setLoading(true)
+    axios.post(`/api/settings/accountDeletion`, {
+      password: deletePassword,
+      reason: deleteReason,
+      additionalFeedback: deleteFeedback
+    }, { withCredentials: true })
+      .then(res => {
+        setToast && setToast({
+          message: res.data?.message || 'Account deleted successfully',
+          type: 'success'
+        })
+        signOut({ callbackUrl: '/' })
+      })
+      .catch(err => {
+        setToast && setToast({
+          message: err.response?.data?.message || 'Failed to delete account',
           type: 'error'
         })
       })
@@ -439,9 +478,88 @@ const page = () => {
                       <strong>Security Tip:</strong> Use a strong password with at least 8 characters, including uppercase, lowercase, numbers, and symbols.
                     </p>
                   </div>
+
+                  <button onClick={() => setShowDeleteModal(true)} className="flex items-center gap-2 bg-red-700 text-white px-6 py-3 rounded-lg font-semibold hover:bg-red-800 transition-all disabled:opacity-50 cursor-pointer">
+                    <Trash className="w-5 h-5" />
+                    Delete Account
+                  </button>
                 </div>
               )}
 
+              {showDeleteModal && <div className='fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4'>
+                <div className="bg-[#252529] p-6 rounded-2xl border border-gray-800 shadow-2xl w-full max-w-md">
+
+                  <h3 className="text-white font-bold text-lg mb-2">Delete Account?</h3>
+                  <p className="text-gray-400 text-sm mb-4">We're sorry to see you go. Please help us improve by telling us why.</p>
+
+                  {/* Reason Selector */}
+                  <div className="mb-4">
+                    <label className="text-sm text-gray-400 mb-1 block">Reason for leaving *</label>
+                    <select
+                      value={deleteReason}
+                      onChange={(e) => setDeleteReason(e.target.value)}
+                      className="w-full p-3 rounded-lg bg-[#1a1a1e] border border-gray-600 text-white focus:outline-none focus:border-orange-500"
+                      required
+                    >
+                      <option value="">Select a reason</option>
+                      <option value="no_longer_needed">No longer need the service</option>
+                      <option value="switching_service">Switching to another service</option>
+                      <option value="too_expensive">Too expensive</option>
+                      <option value="missing_features">Missing features I need</option>
+                      <option value="other">Other</option>
+                    </select>
+                  </div>
+
+                  {/* Additional Feedback */}
+                  <div className="mb-4">
+                    <label className="text-sm text-gray-400 mb-1 block">Additional feedback (optional)</label>
+                    <textarea
+                      value={deleteFeedback}
+                      onChange={(e) => setDeleteFeedback(e.target.value)}
+                      placeholder="Tell us how we could improve..."
+                      className="w-full p-3 rounded-lg bg-[#1a1a1e] border border-gray-600 text-white focus:outline-none focus:border-orange-500 resize-none h-20"
+                    />
+                  </div>
+
+                  {/* Password Confirmation */}
+                  <div className="mb-4">
+                    <label className="text-sm text-gray-400 mb-1 block">Confirm your password *</label>
+                    <input
+                      type="password"
+                      placeholder='Enter your password'
+                      value={deletePassword}
+                      onChange={(e) => setDeletePassword(e.target.value)}
+                      className="w-full p-3 rounded-lg bg-[#1a1a1e] border border-gray-600 text-white focus:outline-none focus:border-orange-500"
+                      required
+                    />
+                  </div>
+
+                  <p className="text-red-500 text-xs mb-4 p-3 bg-red-500/10 rounded-lg border border-red-500/30">
+                    ⚠️ Warning: This action cannot be undone. All your business data, users, products, and stock logs will be permanently deleted.
+                  </p>
+
+                  <div className="flex justify-end gap-3">
+                    <button
+                      onClick={() => {
+                        setShowDeleteModal(false)
+                        setDeletePassword('')
+                        setDeleteReason('')
+                        setDeleteFeedback('')
+                      }}
+                      className="text-gray-400 hover:text-gray-200 cursor-pointer px-4 py-2"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      onClick={handleDeleteAccount}
+                      disabled={loading}
+                      className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors cursor-pointer disabled:opacity-50"
+                    >
+                      {loading ? 'Deleting...' : 'Delete Forever'}
+                    </button>
+                  </div>
+                </div>
+              </div>}
 
             </>
           )}
