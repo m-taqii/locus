@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react'
 import { LayoutDashboard, Package, Users, Settings, PanelRightOpen, PanelRightClose, LogOut, TextAlignJustifyIcon, MonitorCog } from 'lucide-react'
 import { useSession } from 'next-auth/react'
 import { signOut } from 'next-auth/react'
+import { Lightbulb } from 'lucide-react'
 
 const layout = ({ children }) => {
     const [open, setOpen] = useState(false)
@@ -56,7 +57,10 @@ const layout = ({ children }) => {
 
                         <Link href="/dashboard/manage-stocks" onClick={() => setMobileMenu(false)}><li className='flex items-center gap-2 hover:bg-[#1a1a1e] p-2 hover:rounded-md cursor-pointer hover:border-r-2 hover:border-[#F0A728] border-b border-gray-700'><MonitorCog /> {open || isMobile ? "Manage Stocks" : ""}</li></Link>
 
+                        <Link href="/dashboard/insights" onClick={() => setMobileMenu(false)}><li className='flex items-center gap-2 hover:bg-[#1a1a1e] p-2 hover:rounded-md cursor-pointer hover:border-r-2 hover:border-[#F0A728] border-b border-gray-700'><Lightbulb /> {open || isMobile ? "Insights" : ""}</li></Link>
+
                         <Link href="/dashboard/settings" onClick={() => setMobileMenu(false)}><li className='flex items-center gap-2 hover:bg-[#1a1a1e] p-2 hover:rounded-md cursor-pointer hover:border-r-2 hover:border-[#F0A728] border-b border-gray-700'><Settings /> {open || isMobile ? "Settings" : ""}</li></Link>
+
                     </ul>
 
                     <div className='w-full px-3 pb-3 mt-auto'>

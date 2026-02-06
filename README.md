@@ -7,9 +7,10 @@
 ![MongoDB](https://img.shields.io/badge/MongoDB-Mongoose-green?logo=mongodb)
 ![TailwindCSS](https://img.shields.io/badge/TailwindCSS-4.0-38B2AC?logo=tailwind-css)
 ![NextAuth](https://img.shields.io/badge/NextAuth-4.24.13-blue)
+![Recharts](https://img.shields.io/badge/Recharts-3.7.0-ff7300)
 ![Resend](https://img.shields.io/badge/Resend-Email-purple)
 ![License](https://img.shields.io/badge/License-MIT-green)
-![Version](https://img.shields.io/badge/Version-0.8.0-orange)
+![Version](https://img.shields.io/badge/Version-0.9.0-orange)
 
 **Master Your Inventory** — Precision. Control. Growth.
 
@@ -21,19 +22,27 @@ The operating system for modern commerce.
 
 ---
 
-## 🆕 What's New in v0.8.0
+## 🆕 What's New in v0.9.0
 
-🎉 **Email Verification System!** Secure your business accounts with OTP verification.
+🎉 **Business Insights Dashboard!** Deep dive into your inventory performance with charts and analytics.
 
-✅ **OTP Email Verification** - 6-digit code sent during registration  
-✅ **Professional Email Templates** - Branded HTML emails with Locus theme  
-✅ **Resend Integration** - Reliable email delivery service  
-✅ **Resend OTP** - Request new code with 60-second rate limiting  
-✅ **10-Minute Expiry** - Secure time-limited verification codes  
-✅ **Email Verified Flag** - Track verification status in database  
-✅ **Verification Page** - Clean UI for entering OTP codes  
+✅ **Insights Page** - New `/dashboard/insights` with comprehensive analytics  
+✅ **Sales Trend Chart** - Line chart showing sales vs returns over time  
+✅ **Top Products Chart** - Bar chart visualizing stock levels  
+✅ **Inventory Health Score** - Overall health percentage (0-100%)  
+✅ **Turnover Rate** - Monthly inventory turnover calculation  
+✅ **Dead Stock Alerts** - Products with no sales in 30+ days  
+✅ **Fast/Slow Moving Stock** - Velocity analysis for all products  
+✅ **Date Range Filter** - 7 days, 30 days, 90 days, or year  
+✅ **Recharts Integration** - Beautiful, responsive charts  
+✅ **LineGraph Component** - Reusable line chart for trends  
+✅ **BarChart Component** - Reusable bar chart for comparisons  
 
-**Business accounts are now verified before accessing the dashboard!**
+**Gain actionable insights to optimize your inventory!**
+
+### Previous Updates (v0.8.0)
+
+✅ Email Verification (OTP), Resend Integration, Branded Email Templates, Verify Page
 
 ### Previous Updates (v0.7.0)
 
@@ -45,13 +54,11 @@ The operating system for modern commerce.
 
 ### Previous Updates (v0.5.0)
 
-✅ Dashboard Analytics, Low Stock Alerts, Best Selling Staff Leaderboard, Owner Role, Role-Based Dashboard
+✅ Dashboard Analytics, Low Stock Alerts, Best Selling Staff Leaderboard, Role-Based Dashboard
 
 ### Previous Updates (v0.4.0)
 
 ✅ Settings Page UI, Form Validations, Tabbed Interface
-
-### Previous Updates (v0.3.0)
 
 ✅ Stock Management System, Activity Logging, Stock History, Search Functionality
 
@@ -85,7 +92,7 @@ The operating system for modern commerce.
 
 **Locus** is a modern, full-stack inventory management SaaS application built with Next.js 16 (App Router), React 19, and MongoDB. It provides businesses with a comprehensive platform to manage their inventory, track products, manage users, and maintain detailed logs of inventory operations.
 
-**v0.8.0** introduces email verification with OTP during business registration. Combined with backend pagination, mobile navigation, complete settings management, dashboard analytics, and role-based access control, Locus is a production-ready inventory management solution with enterprise-grade security.
+**v0.9.0** introduces a comprehensive Business Insights dashboard with interactive charts and inventory health analytics. Combined with email verification, pagination, mobile navigation, and role-based access control, Locus is a production-ready inventory management solution with enterprise-grade features.
 
 The application features a **dark-themed UI** with stunning **GSAP animations**, **glassmorphism effects**, and a premium amber/orange gradient color scheme that creates an engaging user experience.
 
@@ -94,9 +101,11 @@ The application features a **dark-themed UI** with stunning **GSAP animations**,
 - 🏢 **Multi-tenant Architecture** - Each business has its own isolated data
 - 🔐 **Secure Authentication** - NextAuth.js with JWT session management
 - ✉️ **Email Verification** - OTP-based verification with Resend email service
+- 📈 **Business Insights** - Charts, health scores, and inventory analytics
 - 👥 **Role-Based Access Control** - Owner, Admin, and Staff roles with UI-level permissions
 - 📦 **Complete Inventory Management** - Track products with categories, SKUs, and thresholds
 - 📊 **Dashboard Analytics** - Real-time statistics, sales tracking, and performance metrics
+- 📉 **Interactive Charts** - Line and bar charts powered by Recharts
 - 📄 **Pagination** - Backend pagination for products and users with customizable page sizes
 - 🚨 **Low Stock Alerts** - Visual alerts for products below minimum threshold
 - 🏆 **Staff Leaderboard** - Track top performing staff by sales
@@ -190,7 +199,35 @@ The application features a **dark-themed UI** with stunning **GSAP animations**,
 - **Real-time Data:** Dashboard refreshes with latest data on load
 - **Quick Actions:** Add Product button from dashboard (Owner/Admin only)
 
-### 📊 Stock Management & Activity Logging
+### � Business Insights
+
+- **Insights Page** - Dedicated `/dashboard/insights` analytics page
+- **Interactive Charts (Recharts):**
+  - **Line Chart:** Sales vs Returns trend over time
+  - **Bar Chart:** Top products by stock quantity
+  - Responsive design with tooltips and legends
+- **Inventory Health Score:**
+  - 0-100% overall health rating
+  - Color-coded display (green/yellow/red)
+  - Calculated from dead stock, overstock, and low stock counts
+- **Key Metrics:**
+  - **Turnover Rate:** Monthly inventory turnover calculation
+  - **Avg. Days in Stock:** Average holding time for products
+  - **Dead Stock Count:** Products with no sales in 30+ days
+  - **Overstock Count:** Products above 3x minimum threshold
+- **Stock Analysis:**
+  - **Fast Moving Stock:** Products selling above average velocity
+  - **Slow Moving Stock:** Products selling below average velocity
+  - **Dead Stock Alerts:** Products needing attention
+- **Date Range Filter:**
+  - Last 7 Days
+  - Last 30 Days
+  - Last 90 Days
+  - This Year
+- **Real-time Refresh:** Manual refresh button for latest data
+- **Loading States:** Skeleton loading and error handling
+
+### �📊 Stock Management & Activity Logging
 
 - **Stock Adjustment System** - Manually adjust inventory levels
 - **Stock-In Operations:**
@@ -255,6 +292,7 @@ The application features a **dark-themed UI** with stunning **GSAP animations**,
 - **TailwindCSS 4** - Utility-first CSS framework
 - **GSAP 3.14.2** - Professional-grade animation library
 - **@gsap/react 2.1.2** - GSAP React integration
+- **Recharts 3.7.0** - Composable charting library
 - **Lucide React 0.562.0** - Beautiful icon library
 - **Axios 1.13.2** - HTTP client for API requests
 
@@ -297,6 +335,8 @@ locus/
 │   │   │       └── route.js       # PATCH/DELETE - Update/Delete product
 │   │   ├── dashboard/             # Dashboard analytics
 │   │   │   └── route.js           # GET - Fetch dashboard statistics
+│   │   ├── insights/              # Business insights analytics
+│   │   │   └── route.js           # GET - Fetch insights data with charts
 │   │   ├── settings/              # Settings management
 │   │   │   └── account/           # Account settings
 │   │   │       └── route.js       # GET/PATCH - Fetch/Update settings
@@ -306,14 +346,18 @@ locus/
 │   ├── components/                # Reusable React components
 │   │   ├── AddProducts.jsx        # Product creation modal form
 │   │   ├── AddUser.jsx            # User creation modal form
+│   │   ├── BarChart.jsx           # Bar chart component (Recharts)
 │   │   ├── EditProduct.jsx        # Product edit modal form
 │   │   ├── EditUser.jsx           # User edit modal form
+│   │   ├── LineGraph.jsx          # Line chart component (Recharts)
 │   │   ├── Pagination.jsx         # Reusable pagination component
 │   │   ├── Toast.jsx              # Toast notification component
 │   │   ├── Navbar.jsx             # Navigation with mobile menu
 │   │   └── SessionWrapper.jsx     # NextAuth session provider
 │   │
 │   ├── dashboard/                 # Protected dashboard area
+│   │   ├── insights/              # Business insights page
+│   │   │   └── page.js            # Charts, health scores, analytics
 │   │   ├── inventory/             # Inventory management page
 │   │   │   └── page.js            # Products table with pagination
 │   │   ├── manage-stocks/         # Stock adjustment page
@@ -687,6 +731,74 @@ Fetch dashboard statistics and analytics data.
   - Low stock products
 - Uses MongoDB aggregation for efficient queries
 - Business isolation via businessId
+
+---
+
+### Insights Routes
+
+#### `GET /api/insights`
+**File:** `app/api/insights/route.js`
+
+Fetch comprehensive business insights and analytics data for charts.
+
+**Headers:** Requires authenticated session
+
+**Query Parameters:**
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `range` | String | `30days` | Date range: `7days`, `30days`, `90days`, `year` |
+
+**Example:** `/api/insights?range=7days`
+
+**Response (Success):**
+```json
+{
+  "salesTrendData": [
+    { "name": "Mon", "sales": 45, "returns": 5 },
+    { "name": "Tue", "sales": 62, "returns": 8 },
+    { "name": "Wed", "sales": 38, "returns": 3 }
+  ],
+  "productChartData": [
+    { "name": "Laptop...", "quantity": 150, "fullName": "Laptop Pro 15" },
+    { "name": "Mouse", "quantity": 85, "fullName": "Mouse" }
+  ],
+  "inventoryHealth": {
+    "turnoverRate": 2.5,
+    "avgDaysInStock": 12,
+    "deadStockCount": 3,
+    "overstockCount": 5,
+    "healthScore": 78
+  },
+  "deadStock": [
+    { "name": "Old Product", "quantity": 25, "daysSinceLastSale": "45 days" }
+  ],
+  "fastMoving": [
+    { "name": "Popular Item", "velocity": "+150%", "totalSold": 125 }
+  ],
+  "slowMoving": [
+    { "name": "Slow Product", "velocity": "-60%", "totalSold": 5 }
+  ],
+  "summary": {
+    "totalProducts": 50,
+    "totalStock": 2500,
+    "totalSold": 850,
+    "lowStockCount": 8
+  }
+}
+```
+
+**Features:**
+- **Sales Trend Data** - Line chart data for sales vs returns
+- **Product Chart Data** - Top 6 products by stock quantity
+- **Inventory Health Score** - 0-100% health calculation
+- **Turnover Rate** - Monthly inventory turnover
+- **Dead Stock Analysis** - Products with no sales in 30+ days
+- **Fast Moving Stock** - Products selling above average velocity
+- **Slow Moving Stock** - Products selling below average velocity
+- **Overstock Detection** - Products above 3x minimum threshold
+- **Date Range Filtering** - Configurable time periods
+- Uses MongoDB aggregation pipelines for performance
 
 ---
 
@@ -1990,7 +2102,7 @@ pnpm start
 
 ## 🐛 Known Issues & Limitations
 
-### Current State (v0.8.0)
+### Current State (v0.9.0)
 
 **✅ Fully Implemented:**
 - ✅ Business registration and authentication
@@ -2024,6 +2136,12 @@ pnpm start
 - ✅ Reusable Pagination component
 - ✅ Mobile navigation (hamburger menu)
 - ✅ About and Privacy pages
+- ✅ Business Insights page with interactive charts
+- ✅ Inventory health score (0-100%)
+- ✅ Sales trend line chart
+- ✅ Top products bar chart
+- ✅ Dead/Fast/Slow moving stock analysis
+- ✅ Recharts integration
 
 **❌ Not Yet Implemented:**
 - ❌ Advanced filtering (by category, status, etc.)
@@ -2032,7 +2150,6 @@ pnpm start
 - ❌ Export functionality (CSV/PDF)
 - ❌ Bulk operations (multi-select delete/update)
 - ❌ Product categories management (hardcoded list)
-- ❌ Inventory reports
 
 **Known Issues:**
 - Product image field requires a value but doesn't support actual file uploads yet
@@ -2063,7 +2180,7 @@ pnpm start
 - ✅ Toast notifications system
 - ✅ Complete audit trail
 
-### Phase 3: Enhanced UX (Current Focus)
+### Phase 3: Enhanced UX ✅ COMPLETE
 - ✅ Dashboard analytics/statistics
 - ✅ Low stock alerts/notifications
 - ✅ Best selling staff leaderboard
@@ -2072,8 +2189,20 @@ pnpm start
 - ✅ Business model extension (address, industry, website)
 - ✅ Backend pagination (Products, Users)
 - ✅ Pagination component (reusable)
+- ✅ Mobile navigation (hamburger menu)
+- ✅ About and Privacy pages
 - ✅ Email verification (OTP system)
 - ✅ Resend email service integration
+- ✅ Branded email templates
+- ✅ Admin visibility restriction
+- ✅ Business Insights page
+- ✅ Interactive charts (Recharts)
+- ✅ Inventory health score
+- ✅ Sales trend & product charts
+- ✅ Dead/Fast/Slow stock analysis
+- ✅ Date range filtering
+
+### Phase 4: Advanced Features (Current Focus)
 - [ ] Advanced filtering (category, status, date range)
 - [ ] Bulk operations (multi-select)
 - [ ] Image upload for products
@@ -2081,15 +2210,12 @@ pnpm start
 - [ ] Password reset functionality (forgot password)
 - [ ] Export data (CSV, PDF)
 - [ ] Print-friendly views
-
-### Phase 4: Advanced Features
 - [ ] Barcode scanning
 - [ ] QR code generation for products
 - [ ] Multi-location inventory
 - [ ] Supplier management
 - [ ] Purchase orders
 - [ ] Sales tracking
-- [ ] Reports and analytics
 - [ ] API documentation
 - [ ] Webhook support
 

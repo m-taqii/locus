@@ -191,11 +191,11 @@ const page = () => {
                                         value="stock-in"
                                         checked={adjustmentType === "stock-in"}
                                         onChange={() => setAdjustmentType("stock-in")}
-                                        className='w-4 h-4 accent-green-500'
+                                        className='w-4 h-4 accent-red-500'
                                     />
                                     <label htmlFor="stock-in" className='flex items-center gap-2 cursor-pointer text-white'>
-                                        <TrendingUp className='w-4 h-4 text-green-500' />
-                                        Stock In
+                                        <TrendingDown className='w-4 h-4 text-red-500' />
+                                        Return
                                     </label>
                                 </div>
                                 <div className='flex items-center gap-2 bg-[#2a2a2e] p-3 rounded-lg flex-1'>
@@ -206,11 +206,11 @@ const page = () => {
                                         value="stock-out"
                                         checked={adjustmentType === "stock-out"}
                                         onChange={() => setAdjustmentType("stock-out")}
-                                        className='w-4 h-4 accent-red-500'
+                                        className='w-4 h-4 accent-green-500'
                                     />
                                     <label htmlFor="stock-out" className='flex items-center gap-2 cursor-pointer text-white'>
-                                        <TrendingDown className='w-4 h-4 text-red-500' />
-                                        Stock Out
+                                        <TrendingUp className='w-4 h-4 text-green-500' />
+                                        Sale
                                     </label>
                                 </div>
                             </div>
