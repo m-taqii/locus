@@ -2,13 +2,17 @@ import { NextResponse } from "next/server";
 import bcrypt from "bcrypt";
 import connectDB from "@/app/lib/db";
 import User from "@/models/user.model";
+import Business from "@/models/business.model";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route"
+import { sendEmail } from "@/app/lib/services/email";
+import { getUserInvitationEmailTemplate } from "@/app/lib/emailTemplates";
+import crypto from "crypto";
 
 export async function POST(req) {
   try {
     await connectDB();
-    const { name, email, password, role, status } = await req.json();
+    const { name, email, role, status } = await req.json();
 
     const session = await getServerSession(authOptions);
 
@@ -17,27 +21,39 @@ export async function POST(req) {
     }
 
     let adminId;
+    let businessName;
+    let inviterName;
+
     if (session.user.role !== "Admin" && session.user.role !== "Owner") {
       return NextResponse.json({ error: "Unauthorized - Admin access required" }, { status: 401 });
     }
 
     if (session.user.role == "Owner") {
       adminId = session.user.id;
+      // Fetch business name for owner
+      const business = await Business.findById(session.user.id);
+      businessName = business?.businessName || "your team";
+      inviterName = business?.ownerName || session.user.name;
     } else if (session.user.role == "Admin") {
       adminId = session.user.businessId;
+      // Fetch business name for admin
+      const business = await Business.findById(session.user.businessId);
+      businessName = business?.businessName || "your team";
+      inviterName = session.user.name;
     }
 
     if (!adminId) {
       return NextResponse.json({ error: "Session user ID not found" }, { status: 401 });
     }
 
+    if (session.user.role === "Admin" && role === "Admin") {
+      return NextResponse.json({ error: "Admins cannot create other Admins" }, { status: 401 });
+    }
+
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     if (!emailRegex.test(email)) {
       return NextResponse.json({ error: "Invalid email format" }, { status: 400 });
-    }
-    if (password.length < 6) {
-      return NextResponse.json({ error: "Password must be at least 6 characters long" }, { status: 400 });
     }
     if (name.length < 3) {
       return NextResponse.json({ error: "Name must be at least 3 characters long" }, { status: 400 });
@@ -46,18 +62,30 @@ export async function POST(req) {
     const existing = await User.findOne({ email });
     if (existing) return NextResponse.json({ error: "User already exists" }, { status: 400 });
 
-    const hashed = await bcrypt.hash(password, 10);
-
+    const inviteToken = crypto.randomBytes(32).toString("hex");
     const newUser = await User.create({
       name,
       email,
-      password: hashed,
       role,
       status,
-      business: adminId
+      business: adminId,
+      inviteToken,
+      inviteTokenExpires: Date.now() + 7 * 24 * 60 * 60 * 1000, // 7 days
     });
 
-    return NextResponse.json({ message: "User created", ok: true, userId: newUser._id });
+    const inviteUrl = `${process.env.APP_URL}/invitation?token=${inviteToken}`;
+
+    try {
+      await sendEmail({
+        to: email,
+        subject: `You're invited to join ${businessName} - Locus`,
+        html: getUserInvitationEmailTemplate(name, inviterName, businessName, role, inviteUrl),
+      });
+    } catch (error) {
+      console.error("Error sending invitation email:", error);
+    }
+
+    return NextResponse.json({ message: "Invitation sent successfully", ok: true, userId: newUser._id });
   } catch (error) {
     console.error("Register error:", error);
     return NextResponse.json({ error: error.message || "Internal server error" }, { status: 500 });

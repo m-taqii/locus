@@ -7,8 +7,8 @@ const AddUser = ({ setAddUserOpen, setToast }) => {
         name: "",
         email: "",
         password: "",
-        role: "Admin",
-        status: "active"
+        role: "Staff",
+        status: "pending"
     })
     const [loading, setLoading] = useState(false);
 
@@ -66,17 +66,6 @@ const AddUser = ({ setAddUserOpen, setToast }) => {
                         />
                     </div>
 
-                    <div className='flex flex-col gap-1'>
-                        <label className='text-xs text-gray-500'>Password</label>
-                        <input
-                            type="password"
-                            placeholder='Enter password'
-                            name="password"
-                            className='p-3 rounded-lg bg-white/10 text-white text-sm focus:border-[#a34b27] focus:border focus:outline-none transition-all duration-300'
-                            onChange={(e) => setUser({ ...user, password: e.target.value })}
-                            required
-                        />
-                    </div>
 
                     <div className='grid grid-cols-2 gap-4'>
                         <div className="flex flex-col gap-1">
@@ -87,8 +76,8 @@ const AddUser = ({ setAddUserOpen, setToast }) => {
                                 className='p-3 rounded-lg bg-[#2a2a2e] text-white text-sm focus:border-[#a34b27] focus:border focus:outline-none transition-all duration-300'
                                 required
                             >
-                                <option value="Admin" className="bg-[#1a1a1e] text-white">Admin</option>
                                 <option value="Staff" className="bg-[#1a1a1e] text-white">Staff</option>
+                                <option value="Admin" className="bg-[#1a1a1e] text-white">Admin</option>
                             </select>
                         </div>
 
@@ -97,11 +86,11 @@ const AddUser = ({ setAddUserOpen, setToast }) => {
                             <select
                                 name="status"
                                 onChange={(e) => setUser({ ...user, status: e.target.value })}
-                                className='p-3 rounded-lg bg-[#2a2a2e] text-white text-sm focus:border-[#a34b27] focus:border focus:outline-none transition-all duration-300'
+                                className='p-3 rounded-lg bg-[#2a2a2e] text-white text-sm focus:border-[#a34b27] focus:border focus:outline-none transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed'
                                 required
+                                disabled
                             >
-                                <option value="active" className="bg-[#1a1a1e] text-white">Active</option>
-                                <option value="inactive" className="bg-[#1a1a1e] text-white">Inactive</option>
+                                <option value="pending" className="bg-[#1a1a1e] text-white">Pending</option>
                             </select>
                         </div>
                     </div>

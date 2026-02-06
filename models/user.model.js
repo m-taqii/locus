@@ -19,19 +19,39 @@ const UserSchema = new mongoose.Schema({
     },
     password: {
         type: String,
-        required: true,
         minLength: [6, "Password must be at least 6 characters long"],
+        default: null,
         select: false
     },
     role:{
         type: String,
         enum: ["Admin", "Staff"],
-        default: "Admin"
+        default: "Staff"
+    },
+    inviteToken:{
+        type: String,
+        default: null,
+        select: false,
+    },
+    inviteTokenExpires:{
+        type: Date,
+        default: null,
+        select: false,
     },
     status:{
         type: String,
-        enum: ["active", "inactive"],
-        default: "active"
+        enum: ["pending", "active", "inactive"],
+        default: "pending"
+    },
+    resetPasswordToken: {
+        type: String,
+        default: null,
+        select: false
+    },
+    resetPasswordExpires: {
+        type: Date,
+        default: null,
+        select: false
     }
 },{timestamps: true});
 
