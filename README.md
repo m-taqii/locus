@@ -24,21 +24,35 @@ The operating system for modern commerce.
 
 ## 🆕 What's New in v0.9.0
 
-🎉 **Business Insights Dashboard!** Deep dive into your inventory performance with charts and analytics.
+🎉 **Major Feature Release!** Password Reset, User Invitations, and Business Insights Dashboard!
 
-✅ **Insights Page** - New `/dashboard/insights` with comprehensive analytics  
-✅ **Sales Trend Chart** - Line chart showing sales vs returns over time  
+### 🔑 Password Reset System
+✅ **Forgot Password Page** - Request password reset via email  
+✅ **Reset Password Page** - Secure token-based password reset  
+✅ **Token Validation** - 1-hour expiry with security checks  
+✅ **Branded Reset Emails** - Professional HTML email templates  
+✅ **Support for Both Accounts** - Works for Business owners and Staff  
+
+### 👥 User Invitation System
+✅ **Email Invitations** - Invite team members via email  
+✅ **Invitation Page** - Beautiful onboarding experience  
+✅ **Self-Service Activation** - Users create their own passwords  
+✅ **7-Day Expiry** - Secure invitation tokens  
+✅ **Role Assignment** - Assign Admin or Staff role during invite  
+✅ **Pending Status** - Users start as "pending" until activated  
+✅ **No Password Required** - Admin doesn't set passwords for users  
+
+### 📈 Business Insights Dashboard
+✅ **Insights Page** - New `/dashboard/insights` with analytics  
+✅ **Sales Trend Chart** - Line chart showing sales vs returns  
 ✅ **Top Products Chart** - Bar chart visualizing stock levels  
 ✅ **Inventory Health Score** - Overall health percentage (0-100%)  
 ✅ **Turnover Rate** - Monthly inventory turnover calculation  
-✅ **Dead Stock Alerts** - Products with no sales in 30+ days  
-✅ **Fast/Slow Moving Stock** - Velocity analysis for all products  
+✅ **Dead/Fast/Slow Stock** - Product velocity analysis  
 ✅ **Date Range Filter** - 7 days, 30 days, 90 days, or year  
 ✅ **Recharts Integration** - Beautiful, responsive charts  
-✅ **LineGraph Component** - Reusable line chart for trends  
-✅ **BarChart Component** - Reusable bar chart for comparisons  
 
-**Gain actionable insights to optimize your inventory!**
+**Complete authentication flow with self-service account management!**
 
 ### Previous Updates (v0.8.0)
 
@@ -54,11 +68,7 @@ The operating system for modern commerce.
 
 ### Previous Updates (v0.5.0)
 
-✅ Dashboard Analytics, Low Stock Alerts, Best Selling Staff Leaderboard, Role-Based Dashboard
-
-### Previous Updates (v0.4.0)
-
-✅ Settings Page UI, Form Validations, Tabbed Interface
+✅ Dashboard Analytics, Low Stock Alerts, Best Selling Staff Leaderboard
 
 ✅ Stock Management System, Activity Logging, Stock History, Search Functionality
 
@@ -92,7 +102,7 @@ The operating system for modern commerce.
 
 **Locus** is a modern, full-stack inventory management SaaS application built with Next.js 16 (App Router), React 19, and MongoDB. It provides businesses with a comprehensive platform to manage their inventory, track products, manage users, and maintain detailed logs of inventory operations.
 
-**v0.9.0** introduces a comprehensive Business Insights dashboard with interactive charts and inventory health analytics. Combined with email verification, pagination, mobile navigation, and role-based access control, Locus is a production-ready inventory management solution with enterprise-grade features.
+**v0.9.0** introduces password reset functionality, a user invitation system with email-based onboarding, and a comprehensive Business Insights dashboard. Combined with email verification, pagination, and role-based access control, Locus is a production-ready inventory management solution with enterprise-grade features.
 
 The application features a **dark-themed UI** with stunning **GSAP animations**, **glassmorphism effects**, and a premium amber/orange gradient color scheme that creates an engaging user experience.
 
@@ -101,8 +111,10 @@ The application features a **dark-themed UI** with stunning **GSAP animations**,
 - 🏢 **Multi-tenant Architecture** - Each business has its own isolated data
 - 🔐 **Secure Authentication** - NextAuth.js with JWT session management
 - ✉️ **Email Verification** - OTP-based verification with Resend email service
+- 🔑 **Password Reset** - Forgot password with secure token-based reset flow
+- 👥 **User Invitation System** - Email invitations with self-service activation
 - 📈 **Business Insights** - Charts, health scores, and inventory analytics
-- 👥 **Role-Based Access Control** - Owner, Admin, and Staff roles with UI-level permissions
+- 🎭 **Role-Based Access Control** - Owner, Admin, and Staff roles with UI-level permissions
 - 📦 **Complete Inventory Management** - Track products with categories, SKUs, and thresholds
 - 📊 **Dashboard Analytics** - Real-time statistics, sales tracking, and performance metrics
 - 📉 **Interactive Charts** - Line and bar charts powered by Recharts
@@ -124,6 +136,25 @@ The application features a **dark-themed UI** with stunning **GSAP animations**,
 
 - **NextAuth.js Integration** with credentials provider
 - **JWT-based Session Management** with secure token handling
+- **Email Verification System:**
+  - 6-digit OTP sent via email during registration
+  - 10-minute expiry for security
+  - Resend OTP with 60-second rate limiting
+  - Professional branded email templates
+  - Resend email service integration
+- **Password Reset System:**
+  - Forgot password page at `/login/forgot-password`
+  - Secure token-based reset with 1-hour expiry
+  - Reset password page with token validation
+  - Works for both Business owners and Staff
+  - Professional reset email templates
+- **User Invitation System:**
+  - Email-based team member invitations
+  - Invitation page at `/invitation` for onboarding
+  - 7-day token expiry for security
+  - Self-service password creation
+  - Users start as "pending" until activated
+  - Role assignment during invitation (Admin/Staff)
 - **Dual Login System** - Supports both Business owners and Staff members
 - **Password Encryption** using bcrypt (10 rounds of hashing)
 - **Protected API Routes** with server-side session validation
@@ -134,6 +165,7 @@ The application features a **dark-themed UI** with stunning **GSAP animations**,
   - **API Level:** Owner/Admin-only routes for create/delete operations
   - **UI Level:** Conditional rendering based on user role
 - **Admin User Visibility:** Admins are hidden from other Admins (Owner-only visibility)
+- **Admin Restriction:** Admins cannot create other Admins (Owner-only privilege)
 - **Session Callbacks** for custom user data in sessions
 
 ### 📦 Inventory Management
@@ -325,8 +357,16 @@ locus/
 │   │   │   │   │   └── route.js   # POST - Verify OTP code
 │   │   │   │   └── resend-otp/    # Resend verification
 │   │   │   │       └── route.js   # POST - Resend OTP (rate limited)
+│   │   │   ├── forgot-password/   # Password reset
+│   │   │   │   ├── route.js       # POST - Reset password with token
+│   │   │   │   ├── generate-token/# Generate reset token
+│   │   │   │   │   └── route.js   # POST - Send reset email
+│   │   │   │   └── verify-token/  # Validate reset token
+│   │   │   │       └── route.js   # POST - Check token validity
 │   │   │   └── users/             # User management
-│   │   │       ├── route.js       # GET/POST - Fetch/Create users
+│   │   │       ├── route.js       # GET/POST - Fetch/Invite users
+│   │   │       ├── verify-token/  # User invitation verification
+│   │   │       │   └── route.js   # GET/POST - Validate & activate user
 │   │   │       └── [id]/          # Dynamic user routes
 │   │   │           └── route.js   # PATCH/DELETE - Update/Delete user
 │   │   ├── products/              # Product management
@@ -377,17 +417,24 @@ locus/
 │   │
 │   ├── lib/                       # Utility functions
 │   │   ├── db.js                  # MongoDB connection utility
+│   │   ├── emailTemplates.js      # Branded HTML email templates
 │   │   └── services/              # External services
-│   │       ├── email.js           # Resend email sending utility
-│   │       └── emailTemplates.js  # Branded HTML email templates
+│   │       └── email.js           # Resend email sending utility
 │   │
-│   ├── login/                     # Login page
-│   │   └── page.js                # Login form with NextAuth signIn
+│   ├── login/                     # Login pages
+│   │   ├── page.js                # Login form with NextAuth signIn
+│   │   ├── forgot-password/       # Forgot password page
+│   │   │   └── page.js            # Request password reset form
+│   │   └── reset-password/        # Reset password page
+│   │       └── page.js            # New password form with token
 │   │
 │   ├── register/                  # Registration pages
 │   │   ├── page.js                # Business registration form
 │   │   └── verify/                # Email verification page
 │   │       └── page.js            # OTP input form
+│   │
+│   ├── invitation/                # User invitation page
+│   │   └── page.js                # Accept invitation & set password
 │   │
 │   ├── favicon.ico                # Site favicon
 │   ├── globals.css                # Global styles and Tailwind imports
@@ -515,7 +562,8 @@ Before you begin, ensure you have the following installed:
 |----------|-------------|---------|----------|
 | `MONGODB_URI` | MongoDB connection string | `mongodb://localhost:27017/locus` | ✅ Yes |
 | `NEXTAUTH_SECRET` | Secret key for JWT encryption | `random-32-char-string` | ✅ Yes |
-| `NEXTAUTH_URL` | Base URL of the application | `http://localhost:3000` | ✅ Yes |
+| `NEXTAUTH_URL` | Base URL for NextAuth | `http://localhost:3000` | ✅ Yes |
+| `APP_URL` | Public URL for invitation/reset links | `http://localhost:3000` | ✅ Yes |
 | `RESEND_API_KEY` | Resend API key for emails | `re_xxxxxxxxxxxxx` | ✅ Yes |
 | `EMAIL_FROM` | Sender email address | `Locus <noreply@yourdomain.com>` | ✅ Yes |
 
@@ -526,6 +574,7 @@ Before you begin, ensure you have the following installed:
 MONGODB_URI=mongodb://localhost:27017/locus
 NEXTAUTH_SECRET=dev-secret-key-not-for-production
 NEXTAUTH_URL=http://localhost:3000
+APP_URL=http://localhost:3000
 RESEND_API_KEY=re_your_api_key
 EMAIL_FROM=Locus <onboarding@resend.dev>
 ```
@@ -535,6 +584,7 @@ EMAIL_FROM=Locus <onboarding@resend.dev>
 MONGODB_URI=mongodb+srv://user:pass@cluster.mongodb.net/locus?retryWrites=true&w=majority
 NEXTAUTH_SECRET=strong-production-secret-key-32chars+
 NEXTAUTH_URL=https://yourdomain.com
+APP_URL=https://yourdomain.com
 RESEND_API_KEY=re_production_api_key
 EMAIL_FROM=Locus <noreply@yourdomain.com>
 ```
@@ -585,20 +635,32 @@ Stores business/owner account information with email verification.
 ### 2. User Model
 **File:** `models/user.model.js`
 
-Stores staff member information within a business.
+Stores staff member information with invitation and password reset support.
 
 ```javascript
 {
   name: String (required),                          // User's full name
   business: ObjectId (required, ref: "Business"),   // Link to Business
   email: String (required, unique, 6-320 chars),    // Login email
-  password: String (required, min 6 chars),         // Bcrypt hashed
-  role: String (enum: ["admin", "staff"], default: "admin"),
-  status: String (enum: ["active", "inactive"], default: "active"),
+  password: String (min 6 chars, default: null),    // Bcrypt hashed (set on invite accept)
+  role: String (enum: ["Admin", "Staff"], default: "Staff"),
+  status: String (enum: ["pending", "active", "inactive"], default: "pending"),
+  inviteToken: String (default: null),              // Invitation token
+  inviteTokenExpires: Date (default: null),         // 7-day expiry
+  resetPasswordToken: String (default: null),       // Password reset token
+  resetPasswordExpires: Date (default: null),       // 1-hour expiry
   createdAt: Date,                                  // Auto-generated
   updatedAt: Date                                   // Auto-generated
 }
 ```
+
+**Features:**
+- Email-based invitation system
+- Self-service password creation
+- Users start as "pending" until activation
+- Password reset support
+- 7-day invitation token expiry
+- Secure fields excluded from queries by default
 
 **Relationships:**
 - Many-to-One with Business (multiple users → one business)
@@ -1063,37 +1125,36 @@ Resend OTP verification email with rate limiting.
 #### `POST /api/auth/users`
 **File:** `app/api/auth/users/route.js`
 
-Create a new user (staff member) under the logged-in business.
+Invite a new user (staff member) to join the business via email.
 
-**Headers:** Requires authenticated session
+**Headers:** Requires authenticated session (Owner/Admin)
 
 **Request Body:**
 ```json
 {
   "name": "Jane Smith",
   "email": "jane@acme.com",
-  "password": "password123",
-  "role": "staff",
-  "status": "active"
+  "role": "Staff",
+  "status": "pending"
 }
 ```
 
 **Response (Success):**
 ```json
 {
-  "message": "User created",
+  "message": "Invitation sent successfully",
   "ok": true,
   "userId": "507f1f77bcf86cd799439012"
 }
 ```
 
-**Validations:**
-- Must be authenticated
-- Email format validation
-- Password minimum 6 characters
-- Name minimum 3 characters
-- Email uniqueness check
-- User linked to business via session
+**Features:**
+- Sends branded invitation email to user
+- User starts with "pending" status
+- 7-day invitation token expiry
+- User sets their own password on accepting
+- Admins cannot invite other Admins
+- Includes business name and inviter name in email
 
 ---
 
@@ -1141,6 +1202,153 @@ Fetch users belonging to the logged-in business with pagination.
 - **Admin:** Can only see Staff users (other Admins are hidden)
 
 ---
+
+#### `POST /api/auth/forgot-password/generate-token`
+**File:** `app/api/auth/forgot-password/generate-token/route.js`
+
+Request a password reset link via email.
+
+**Request Body:**
+```json
+{
+  "email": "john@acme.com"
+}
+```
+
+**Response (Success):**
+```json
+{
+  "message": "Reset link sent! Check your email."
+}
+```
+
+**Features:**
+- Generates secure 32-byte random token
+- 1-hour token expiry
+- Works for both Business and User accounts
+- Sends branded reset email
+- Silent failure for non-existent emails (security)
+
+---
+
+#### `POST /api/auth/forgot-password/verify-token`
+**File:** `app/api/auth/forgot-password/verify-token/route.js`
+
+Validate a password reset token.
+
+**Request Body:**
+```json
+{
+  "token": "abc123..."
+}
+```
+
+**Response (Valid):**
+```json
+{
+  "status": 200,
+  "message": "Token is valid"
+}
+```
+
+**Response (Invalid/Expired):**
+```json
+{
+  "status": 400,
+  "error": "Invalid or expired token"
+}
+```
+
+---
+
+#### `POST /api/auth/forgot-password`
+**File:** `app/api/auth/forgot-password/route.js`
+
+Reset password using a valid token.
+
+**Request Body:**
+```json
+{
+  "token": "abc123...",
+  "password": "newSecurePassword123"
+}
+```
+
+**Response (Success):**
+```json
+{
+  "status": 200,
+  "message": "Password reset successfully"
+}
+```
+
+**Validations:**
+- Token must be valid and not expired
+- Password 6-128 characters
+- Works for both Business and User accounts
+- Clears token after successful reset
+
+---
+
+#### `GET /api/auth/users/verify-token`
+**File:** `app/api/auth/users/verify-token/route.js`
+
+Validate a user invitation token.
+
+**Query Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `token` | String | Yes | Invitation token |
+
+**Example:** `/api/auth/users/verify-token?token=abc123...`
+
+**Response (Valid):**
+```json
+{
+  "valid": true,
+  "userName": "Jane Smith",
+  "userEmail": "jane@acme.com",
+  "role": "Staff"
+}
+```
+
+**Response (Invalid/Expired):**
+```json
+{
+  "valid": false,
+  "error": "Invalid or expired invitation"
+}
+```
+
+---
+
+#### `POST /api/auth/users/verify-token`
+**File:** `app/api/auth/users/verify-token/route.js`
+
+Accept an invitation and set password.
+
+**Request Body:**
+```json
+{
+  "token": "abc123...",
+  "password": "mySecurePassword123"
+}
+```
+
+**Response (Success):**
+```json
+{
+  "message": "Account activated successfully! You can now login."
+}
+```
+
+**Process:**
+1. Validates invitation token
+2. Hashes password with bcrypt
+3. Sets user status to "active"
+4. Clears invitation token
+5. User can now login
 
 #### `POST /api/auth/[...nextauth]`
 **File:** `app/api/auth/[...nextauth]/route.js`
@@ -2132,6 +2340,7 @@ pnpm start
 - ✅ Best selling staff leaderboard
 - ✅ Owner role with full business access
 - ✅ Admin visibility restriction (Admins can't see other Admins)
+- ✅ Admin creation restriction (Admins can't create Admins)
 - ✅ Backend pagination for Products and Users
 - ✅ Reusable Pagination component
 - ✅ Mobile navigation (hamburger menu)
@@ -2142,20 +2351,24 @@ pnpm start
 - ✅ Top products bar chart
 - ✅ Dead/Fast/Slow moving stock analysis
 - ✅ Recharts integration
+- ✅ Password reset (forgot password with email)
+- ✅ User invitation system (email-based onboarding)
+- ✅ Pending user status (activated on invite accept)
+- ✅ Self-service password creation for invited users
+- ✅ Reset password page with token validation
 
 **❌ Not Yet Implemented:**
 - ❌ Advanced filtering (by category, status, etc.)
 - ❌ Image upload for products (currently uses placeholder)
-- ❌ Password reset/recovery (forgot password)
 - ❌ Export functionality (CSV/PDF)
 - ❌ Bulk operations (multi-select delete/update)
 - ❌ Product categories management (hardcoded list)
+- ❌ Invitation resend functionality
 
 **Known Issues:**
 - Product image field requires a value but doesn't support actual file uploads yet
 - Avatar upload UI exists but functionality not yet implemented
 - Toast notifications use fixed 3-second duration
-- Some console.log statements remain in production code
 
 ---
 
@@ -2195,19 +2408,24 @@ pnpm start
 - ✅ Resend email service integration
 - ✅ Branded email templates
 - ✅ Admin visibility restriction
+- ✅ Admin creation restriction
 - ✅ Business Insights page
 - ✅ Interactive charts (Recharts)
 - ✅ Inventory health score
 - ✅ Sales trend & product charts
 - ✅ Dead/Fast/Slow stock analysis
 - ✅ Date range filtering
+- ✅ Password reset (forgot password)
+- ✅ User invitation system
+- ✅ Self-service account activation
+- ✅ Pending user status
 
 ### Phase 4: Advanced Features (Current Focus)
 - [ ] Advanced filtering (category, status, date range)
 - [ ] Bulk operations (multi-select)
 - [ ] Image upload for products
 - [ ] Avatar upload for users
-- [ ] Password reset functionality (forgot password)
+- [ ] Invitation resend functionality
 - [ ] Export data (CSV, PDF)
 - [ ] Print-friendly views
 - [ ] Barcode scanning

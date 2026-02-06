@@ -1,9 +1,12 @@
 import axios from 'axios'
 import { useState } from 'react'
+import { useSession } from 'next-auth/react'
 
 const EditUser = ({ setEditUserOpen, user, fetchUsers, setToast }) => {
     const [editUser, setEditUser] = useState(user)
     const [loading, setLoading] = useState(false)
+    const { data: session } = useSession()
+
 
     const handleSubmit = (e) => {
         e.preventDefault()
@@ -46,7 +49,7 @@ const EditUser = ({ setEditUserOpen, user, fetchUsers, setToast }) => {
                         <div className="flex flex-col">
                             <label htmlFor="role" className="text-xs text-gray-500">Role</label>
                             <select name="role" onChange={(e) => setEditUser({ ...editUser, role: e.target.value })} value={editUser.role} className='p-2 rounded-lg bg-[#2a2a2e] text-white focus:border-[#a34b27] focus:border focus:outline-none focus:shadow focus:shadow-[#a34b27] transition-all duration-300 ease-in-out' required>
-                                <option value="Admin" className="bg-[#1a1a1e] text-white">Admin</option>
+                                {session.user.role === "Owner" && <option value="Admin" className="bg-[#1a1a1e] text-white">Admin</option>}
                                 <option value="Staff" className="bg-[#1a1a1e] text-white">Staff</option>
                             </select>
                         </div>

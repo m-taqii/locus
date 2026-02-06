@@ -50,6 +50,7 @@ const page = () => {
                     <input type="password" placeholder='Password' required className='p-2 rounded-lg  bg-white/10 focus:border-[#a34b27] focus:border focus:outline-none focus:shadow focus:shadow-[#a34b27] transition-all duration-300 ease-in-out' value={formData.password} onChange={(e) => setFormData({ ...formData, password: e.target.value })} />
 
                     <button type="submit" className='bg-linear-to-r from-[#a34b27] to-[#F0A728] text-white px-5 py-2 rounded-xl flex items-center justify-center font-semibold hover:cursor-pointer hover:shadow-[0_8px_25px_rgba(255,153,51,0.45)] hover:brightness-110 transition-all duration-300 ease-in-out'>{loading ? "Loading..." : "Login"}</button>
+                    <p className='text-right text-xs'><Link href="/login/forgot-password" className='text-[#a34b27] hover:text-[#a34a278f] font-semibold'>Forgot Password?</Link></p>
 
                     <p className='text-center text-sm'>Want to register your business? <Link href="/register" className='text-[#a34b27] hover:text-[#a34a278f] font-semibold'>Register</Link></p>
 

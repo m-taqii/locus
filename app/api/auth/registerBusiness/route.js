@@ -49,6 +49,8 @@ export async function POST(req) {
       password: hashed,
       otpCode,
       otpExpiry,
+      resetPasswordToken: null,
+      resetPasswordExpires: null
     });
 
     return NextResponse.json({ message: "Business created", ok: true, businessId: newBusiness._id });

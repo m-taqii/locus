@@ -1,8 +1,10 @@
 "use client"
 import { useState } from "react"
 import axios from "axios"
+import { useSession } from "next-auth/react"
 
 const AddUser = ({ setAddUserOpen, setToast }) => {
+    const { data: session } = useSession()
     const [user, setUser] = useState({
         name: "",
         email: "",
@@ -77,7 +79,7 @@ const AddUser = ({ setAddUserOpen, setToast }) => {
                                 required
                             >
                                 <option value="Staff" className="bg-[#1a1a1e] text-white">Staff</option>
-                                <option value="Admin" className="bg-[#1a1a1e] text-white">Admin</option>
+                                {session.user.role === "Owner"&&<option value="Admin" className="bg-[#1a1a1e] text-white">Admin</option>}
                             </select>
                         </div>
 
