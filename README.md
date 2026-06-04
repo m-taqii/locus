@@ -432,7 +432,7 @@ Contributions are welcome! This project is open-source and we encourage communit
 
 1. **Fork the repository**
    ```bash
-   git clone https://github.com/yourusername/locus.git
+   git clone https://github.com/m-taqii/locus.git
    ```
 
 2. **Create a feature branch**
